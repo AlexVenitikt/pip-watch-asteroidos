@@ -62,7 +62,14 @@ Item {
             x: width * 0.36; y: 0
             width: width * 0.28; height: stage.topH
             color: "transparent"; border.width: 2; border.color: fg
-            Text { anchors.centerIn: parent; color: fg; font.pixelSize: 14; font.bold: true; text: "VAULT-TEC" }
+            Image {
+                anchors.centerIn: parent
+                width: parent.width - 6
+                height: parent.height - 6
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                source: "assets/logos/Vault-Tec.png"
+            }
         }
 
         Rectangle {
@@ -77,7 +84,13 @@ Item {
             color: "transparent"; border.width: 2; border.color: fg
             Text { x: 8; y: 4; color: fg; font.pixelSize: 16; font.bold: true; text: "DATA    MAP" }
             Text { x: 18; y: 22; color: fg; font.pixelSize: 28; font.bold: true; text: bridge.stepsValid ? Math.min(99, Math.floor(bridge.steps / 100)).toString() : "0" }
-            Text { x: 118; y: 23; color: fg; font.pixelSize: 20; font.bold: true; text: "<>" }
+            Image {
+                x: 116; y: 22
+                width: 24; height: 24
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                source: "assets/map-icons/Vault.png"
+            }
         }
 
         Rectangle {
@@ -85,7 +98,14 @@ Item {
             color: "transparent"; border.width: 2; border.color: fg
             Text { x: 8; y: 4; color: fg; font.pixelSize: 13; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
             Text { x: 8; y: 24; color: fg; font.pixelSize: 56; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
-            Text { x: 8; y: 92; color: accent; font.pixelSize: 16; font.bold: true; text: "App shortcut" }
+            Image {
+                x: 8; y: 92
+                width: 20; height: 20
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                source: "assets/other-icons/Radio.png"
+            }
+            Text { x: 32; y: 92; color: accent; font.pixelSize: 16; font.bold: true; text: "App shortcut" }
         }
 
         Item {
@@ -97,6 +117,13 @@ Item {
             Text { x: 0; y: 0; color: fg; font.pixelSize: 20; font.bold: true; text: "CORE" }
             Text { x: width - 58; y: 0; color: fg; font.pixelSize: 20; font.bold: true; text: bridge.batteryPercent + "%" }
             Text { x: 0; y: 24; color: dim; font.pixelSize: 14; text: "Temp " + bridge.currentTempC + " C*" }
+            Image {
+                x: width - 26; y: 22
+                width: 20; height: 20
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                source: bridge.charging ? "assets/other-icons/Charge On.png" : "assets/other-icons/Charge Off.png"
+            }
 
             PipboyCharacter {
                 x: 0; y: 48
