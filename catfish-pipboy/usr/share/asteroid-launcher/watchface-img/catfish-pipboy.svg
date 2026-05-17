@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480">
+  <rect x="0" y="0" width="480" height="480" rx="240" fill="#061407"/>
+  <circle cx="240" cy="240" r="210" fill="none" stroke="#3e8f37" stroke-width="6"/>
+  <text x="60" y="120" font-family="monospace" font-size="30" fill="#79ff66">VAULT-TEC</text>
+  <text x="60" y="210" font-family="monospace" font-size="86" fill="#79ff66">12:48</text>
+  <text x="60" y="270" font-family="monospace" font-size="22" fill="#a8ff88">SUN 17/05/2026</text>
+  <rect x="60" y="300" width="360" height="20" fill="none" stroke="#3e8f37"/>
+  <text x="70" y="315" font-family="monospace" font-size="14" fill="#79ff66">PWR 76%</text>
+</svg>

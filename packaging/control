@@ -1,0 +1,6 @@
+Package: asteroid-watchface-catfish-pipboy
+Version: 0.1.0
+Architecture: all
+Maintainer: pip-boy-asteroidos contributors
+Depends: asteroid-launcher
+Description: Pip-Boy style watchface for AsteroidOS (catfish_ext optimized)
