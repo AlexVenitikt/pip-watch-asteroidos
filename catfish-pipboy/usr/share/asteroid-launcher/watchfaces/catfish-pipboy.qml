@@ -132,9 +132,9 @@ Item {
             width: stage.rightW
             height: timeBox.y + timeBox.height - y
 
-            Text { id: coreLabel; x: 0; y: 0; color: fg; font.pixelSize: u * 0.041; font.bold: true; text: "CORE" }
-            Text { x: width - u * 0.10; y: 0; color: fg; font.pixelSize: u * 0.041; font.bold: true; text: bridge.batteryPercent + "%" }
-            Text { id: tempLabel; x: 0; y: coreLabel.y + coreLabel.height - u * 0.01; color: dim; font.pixelSize: u * 0.031; text: "Temp " + bridge.currentTempC + " C*" }
+            Text { id: coreLabel; x: 0; y: 0; color: fg; font.pixelSize: u * 0.033; font.bold: true; text: "CORE" }
+            Text { x: width - u * 0.078; y: coreLabel.y + coreLabel.height - u * 0.01; color: fg; font.pixelSize: u * 0.033; font.bold: true; text: bridge.batteryPercent + "%" }
+            Text { id: tempLabel; x: 0; y: coreLabel.y + coreLabel.height + u * 0.020; color: dim; font.pixelSize: u * 0.031; text: "Temp " + bridge.currentTempC + " C*" }
             Image {
                 x: width - u * 0.055
                 y: tempLabel.y
@@ -179,7 +179,7 @@ Item {
 
         Text {
             anchors.left: parent.left
-            anchors.leftMargin: u * 0.01
+            anchors.leftMargin: u * 0.03
             anchors.bottom: parent.bottom
             color: fg
             font.pixelSize: u * 0.053
