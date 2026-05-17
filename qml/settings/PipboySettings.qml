@@ -1,8 +1,11 @@
 import QtQuick 2.6
 import Qt.labs.settings 1.0
 
-QtObject {
+Item {
     id: root
+    visible: false
+    width: 0
+    height: 0
 
     Settings {
         id: cfg
