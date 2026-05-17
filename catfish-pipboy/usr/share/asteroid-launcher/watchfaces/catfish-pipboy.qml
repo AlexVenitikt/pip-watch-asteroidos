@@ -43,7 +43,7 @@ Item {
     Item {
         id: stage
         anchors.centerIn: parent
-        width: parent.width - u * 0.14
+        width: parent.width - u * 0.20
         height: width
 
         property real gap: u * 0.01
@@ -118,10 +118,10 @@ Item {
             color: "transparent"
             border.width: 2
             border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.028; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
-            Text { x: 8; y: u * 0.05; color: fg; font.pixelSize: u * 0.11; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
-            Image { x: 8; y: height - u * 0.05; width: u * 0.04; height: u * 0.04; fillMode: Image.PreserveAspectFit; source: Qt.resolvedUrl("assets/other-icons/Radio.png") }
-            Text { x: u * 0.05; y: height - u * 0.05; color: accent; font.pixelSize: u * 0.038; font.bold: true; text: "App shortcut" }
+            Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.026; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
+            Text { x: 8; y: u * 0.048; color: fg; font.pixelSize: u * 0.105; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
+            Image { x: 8; y: height - u * 0.045; width: u * 0.032; height: u * 0.032; fillMode: Image.PreserveAspectFit; source: Qt.resolvedUrl("assets/other-icons/Radio.png") }
+            Text { x: u * 0.043; y: height - u * 0.046; color: accent; font.pixelSize: u * 0.030; font.bold: true; text: "App shortcut" }
         }
 
         Item {
@@ -132,40 +132,41 @@ Item {
             width: stage.rightW
             height: timeBox.y + timeBox.height - y
 
-            Text { x: 0; y: 0; color: fg; font.pixelSize: u * 0.052; font.bold: true; text: "CORE" }
-            Text { x: width - u * 0.12; y: 0; color: fg; font.pixelSize: u * 0.052; font.bold: true; text: bridge.batteryPercent + "%" }
-            Text { x: 0; y: u * 0.045; color: dim; font.pixelSize: u * 0.035; text: "Temp " + bridge.currentTempC + " C*" }
+            Text { id: coreLabel; x: 0; y: 0; color: fg; font.pixelSize: u * 0.046; font.bold: true; text: "CORE" }
+            Text { x: width - u * 0.11; y: 0; color: fg; font.pixelSize: u * 0.046; font.bold: true; text: bridge.batteryPercent + "%" }
+            Text { id: tempLabel; x: 0; y: coreLabel.y + coreLabel.height - u * 0.01; color: dim; font.pixelSize: u * 0.031; text: "Temp " + bridge.currentTempC + " C*" }
             Image {
                 x: width - u * 0.055
-                y: u * 0.045
-                width: u * 0.04
-                height: u * 0.04
+                y: tempLabel.y
+                width: u * 0.032
+                height: u * 0.032
                 fillMode: Image.PreserveAspectFit
                 source: bridge.charging ? Qt.resolvedUrl("assets/other-icons/Charge On.png") : Qt.resolvedUrl("assets/other-icons/Charge Off.png")
             }
 
             PipboyCharacter {
+                id: chara
                 x: 0
-                y: u * 0.10
-                width: u * 0.14
-                height: u * 0.18
+                y: tempLabel.y + tempLabel.height + u * 0.01
+                width: u * 0.12
+                height: u * 0.155
                 fg: root.fg
                 ambientMode: root.ambientMode || cfg.simplifiedMode
                 state: bridge.steps > 3000 ? "walking" : "resting"
                 visible: !cfg.simplifiedMode
             }
 
-            Text { x: u * 0.15; y: u * 0.10; color: fg; font.pixelSize: u * 0.07; font.bold: true; text: "STAT" }
-            Text { x: u * 0.15; y: u * 0.16; color: fg; font.pixelSize: u * 0.03; text: bridge.weatherValid ? bridge.weatherCondition : "NO DATA" }
-            Text { x: u * 0.15; y: u * 0.20; color: accent; font.pixelSize: u * 0.03; text: "PPT " + bridge.precipitationPercent + "%" }
-            Text { x: u * 0.15; y: u * 0.235; color: accent; font.pixelSize: u * 0.03; text: bridge.currentTempC + "F" }
-            Text { x: u * 0.15; y: u * 0.27; color: accent; font.pixelSize: u * 0.03; text: "+" + bridge.uvIndex }
+            Text { id: statLabel; x: chara.x + chara.width + u * 0.02; y: chara.y; color: fg; font.pixelSize: u * 0.062; font.bold: true; text: "STAT" }
+            Text { x: statLabel.x; y: statLabel.y + statLabel.height - u * 0.01; color: fg; font.pixelSize: u * 0.027; text: bridge.weatherValid ? bridge.weatherCondition : "NO DATA" }
+            Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.02; color: accent; font.pixelSize: u * 0.027; text: "PPT " + bridge.precipitationPercent + "%" }
+            Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.05; color: accent; font.pixelSize: u * 0.027; text: bridge.currentTempC + "F" }
+            Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.08; color: accent; font.pixelSize: u * 0.027; text: "+" + bridge.uvIndex }
 
-            Text { x: 0; y: u * 0.30; color: fg; font.pixelSize: u * 0.065; font.bold: true; text: "HP" }
-            Text { x: width - u * 0.06; y: u * 0.30; color: fg; font.pixelSize: u * 0.065; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0 }
+            Text { id: hpLabel; x: 0; y: chara.y + chara.height + u * 0.01; color: fg; font.pixelSize: u * 0.057; font.bold: true; text: "HP" }
+            Text { x: width - u * 0.055; y: hpLabel.y; color: fg; font.pixelSize: u * 0.057; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0 }
             PipboySegmentBar {
                 x: 0
-                y: u * 0.36
+                y: hpLabel.y + hpLabel.height + u * 0.008
                 width: rightCol.width
                 height: u * 0.016
                 value: bridge.heartRateValid ? bridge.heartRate : 0
@@ -173,7 +174,7 @@ Item {
                 activeColor: fg
                 passiveColor: dim
             }
-            Text { x: 0; y: u * 0.375; color: fg; font.pixelSize: u * 0.06; font.bold: true; text: "RAD 0" }
+            Text { x: 0; y: hpLabel.y + hpLabel.height + u * 0.03; color: fg; font.pixelSize: u * 0.052; font.bold: true; text: "RAD 0" }
         }
 
         Text {
