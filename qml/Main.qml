@@ -16,8 +16,7 @@ Item {
     property color dim: "#0a7d2c"
     property color bg: "#031107"
     property color accent: "#7aff9e"
-    property int burninOffsetX: ambientMode ? ((now.getMinutes() % 3) - 1) : 0
-    property int burninOffsetY: ambientMode ? ((now.getSeconds() % 3) - 1) : 0
+    property real u: height
 
     PipboySettings { id: cfg }
     PipboyDataBridge { id: bridge; ambientMode: root.ambientMode }
@@ -33,7 +32,7 @@ Item {
 
     Rectangle {
         anchors.centerIn: parent
-        width: parent.width - 20
+        width: parent.width - u * 0.04
         height: width
         radius: width / 2
         color: "transparent"
@@ -44,28 +43,29 @@ Item {
     Item {
         id: stage
         anchors.centerIn: parent
-        width: parent.width - 72
+        width: parent.width - u * 0.14
         height: width
-        x: burninOffsetX
-        y: burninOffsetY
 
-        readonly property real gap: 5
-        readonly property real leftW: width * 0.55
-        readonly property real rightW: width * 0.42
-        readonly property real topH: 28
-        readonly property real y1: topH + gap
-        readonly property real hDate: 52
-        readonly property real hDataMap: 52
-        readonly property real hTime: 108
+        property real gap: u * 0.01
+        property real leftW: width * 0.57
+        property real rightW: width * 0.40
+        property real headH: u * 0.06
+        property real dateH: u * 0.11
+        property real dataH: u * 0.11
+        property real timeH: u * 0.225
 
         Rectangle {
-            x: width * 0.36; y: 0
-            width: width * 0.28; height: stage.topH
-            color: "transparent"; border.width: 2; border.color: fg
+            id: logoBox
+            width: stage.leftW * 0.5
+            height: stage.headH
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            color: "transparent"
+            border.width: 2
+            border.color: fg
             Image {
-                anchors.centerIn: parent
-                width: parent.width - 6
-                height: parent.height - 6
+                anchors.fill: parent
+                anchors.margins: 3
                 fillMode: Image.PreserveAspectFit
                 smooth: true
                 source: Qt.resolvedUrl("assets/logos/Vault-Tec.png")
@@ -73,88 +73,124 @@ Item {
         }
 
         Rectangle {
-            x: 0; y: stage.y1; width: stage.leftW; height: stage.hDate
-            color: "transparent"; border.width: 2; border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: 16; font.bold: true; text: Fmt.two(now.getDate()) + "  " + Qt.formatDate(now, "MMM").toUpperCase() + "  " + now.getFullYear() }
-            Text { x: 8; y: 30; color: accent; font.pixelSize: 12; font.bold: true; text: "WD " + Qt.formatDate(now, "ddd").toUpperCase() + "  w " + Fmt.weekOfYear(now) + "  d " + Fmt.dayOfYear(now) }
+            id: dateBox
+            anchors.top: logoBox.bottom
+            anchors.topMargin: stage.gap
+            anchors.left: parent.left
+            width: stage.leftW
+            height: stage.dateH
+            color: "transparent"
+            border.width: 2
+            border.color: fg
+            Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.038; font.bold: true; text: Fmt.two(now.getDate()) + "  " + Qt.formatDate(now, "MMM").toUpperCase() + "  " + now.getFullYear() }
+            Text { x: 8; y: height - u * 0.04; color: accent; font.pixelSize: u * 0.026; font.bold: true; text: "WD " + Qt.formatDate(now, "ddd").toUpperCase() + "  w " + Fmt.weekOfYear(now) + "  d " + Fmt.dayOfYear(now) }
         }
 
         Rectangle {
-            x: 0; y: stage.y1 + stage.hDate + stage.gap; width: stage.leftW; height: stage.hDataMap
-            color: "transparent"; border.width: 2; border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: 16; font.bold: true; text: "DATA    MAP" }
-            Text { x: 18; y: 22; color: fg; font.pixelSize: 28; font.bold: true; text: bridge.stepsValid ? Math.min(99, Math.floor(bridge.steps / 100)).toString() : "0" }
+            id: dataBox
+            anchors.top: dateBox.bottom
+            anchors.topMargin: stage.gap
+            anchors.left: parent.left
+            width: stage.leftW
+            height: stage.dataH
+            color: "transparent"
+            border.width: 2
+            border.color: fg
+            Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.04; font.bold: true; text: "DATA    MAP" }
+            Text { x: 14; y: u * 0.045; color: fg; font.pixelSize: u * 0.06; font.bold: true; text: bridge.stepsValid ? Math.min(99, Math.floor(bridge.steps / 100)).toString() : "0" }
             Image {
-                x: 116; y: 22
-                width: 24; height: 24
+                x: width - u * 0.08
+                y: u * 0.05
+                width: u * 0.05
+                height: u * 0.05
                 fillMode: Image.PreserveAspectFit
-                smooth: true
                 source: Qt.resolvedUrl("assets/map-icons/Vault.png")
             }
         }
 
         Rectangle {
-            x: 0; y: stage.y1 + stage.hDate + stage.gap + stage.hDataMap + stage.gap; width: stage.leftW; height: stage.hTime
-            color: "transparent"; border.width: 2; border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: 13; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
-            Text { x: 8; y: 24; color: fg; font.pixelSize: 46; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
-            Image {
-                x: 8; y: 82
-                width: 20; height: 20
-                fillMode: Image.PreserveAspectFit
-                smooth: true
-                source: Qt.resolvedUrl("assets/other-icons/Radio.png")
-            }
-            Text { x: 32; y: 82; color: accent; font.pixelSize: 16; font.bold: true; text: "App shortcut" }
+            id: timeBox
+            anchors.top: dataBox.bottom
+            anchors.topMargin: stage.gap
+            anchors.left: parent.left
+            width: stage.leftW
+            height: stage.timeH
+            color: "transparent"
+            border.width: 2
+            border.color: fg
+            Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.028; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
+            Text { x: 8; y: u * 0.05; color: fg; font.pixelSize: u * 0.11; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
+            Image { x: 8; y: height - u * 0.05; width: u * 0.04; height: u * 0.04; fillMode: Image.PreserveAspectFit; source: Qt.resolvedUrl("assets/other-icons/Radio.png") }
+            Text { x: u * 0.05; y: height - u * 0.05; color: accent; font.pixelSize: u * 0.038; font.bold: true; text: "App shortcut" }
         }
 
         Item {
-            x: stage.leftW + stage.gap
-            y: stage.y1
+            id: rightCol
+            anchors.top: dateBox.top
+            anchors.left: dateBox.right
+            anchors.leftMargin: stage.gap
             width: stage.rightW
-            height: stage.hDate + stage.gap + stage.hDataMap + stage.gap + stage.hTime
+            height: timeBox.y + timeBox.height - y
 
-            Text { x: 0; y: 0; color: fg; font.pixelSize: 20; font.bold: true; text: "CORE" }
-            Text { x: width - 58; y: 0; color: fg; font.pixelSize: 20; font.bold: true; text: bridge.batteryPercent + "%" }
-            Text { x: 0; y: 24; color: dim; font.pixelSize: 14; text: "Temp " + bridge.currentTempC + " C*" }
+            Text { x: 0; y: 0; color: fg; font.pixelSize: u * 0.052; font.bold: true; text: "CORE" }
+            Text { x: width - u * 0.12; y: 0; color: fg; font.pixelSize: u * 0.052; font.bold: true; text: bridge.batteryPercent + "%" }
+            Text { x: 0; y: u * 0.045; color: dim; font.pixelSize: u * 0.035; text: "Temp " + bridge.currentTempC + " C*" }
             Image {
-                x: width - 26; y: 22
-                width: 20; height: 20
+                x: width - u * 0.055
+                y: u * 0.045
+                width: u * 0.04
+                height: u * 0.04
                 fillMode: Image.PreserveAspectFit
-                smooth: true
                 source: bridge.charging ? Qt.resolvedUrl("assets/other-icons/Charge On.png") : Qt.resolvedUrl("assets/other-icons/Charge Off.png")
             }
 
             PipboyCharacter {
-                x: 0; y: 48
-                width: 78; height: 98
+                x: 0
+                y: u * 0.10
+                width: u * 0.14
+                height: u * 0.18
                 fg: root.fg
                 ambientMode: root.ambientMode || cfg.simplifiedMode
                 state: bridge.steps > 3000 ? "walking" : "resting"
                 visible: !cfg.simplifiedMode
             }
 
-            Text { x: 82; y: 54; color: fg; font.pixelSize: 22; font.bold: true; text: "STAT" }
-            Text { x: 82; y: 80; color: fg; font.pixelSize: 11; text: bridge.weatherValid ? bridge.weatherCondition : "NO DATA" }
-            Text { x: 82; y: 98; color: accent; font.pixelSize: 11; text: "PPT " + bridge.precipitationPercent + "%" }
-            Text { x: 82; y: 114; color: accent; font.pixelSize: 11; text: bridge.currentTempC + "F" }
-            Text { x: 82; y: 130; color: accent; font.pixelSize: 11; text: "+" + bridge.uvIndex }
+            Text { x: u * 0.15; y: u * 0.10; color: fg; font.pixelSize: u * 0.07; font.bold: true; text: "STAT" }
+            Text { x: u * 0.15; y: u * 0.16; color: fg; font.pixelSize: u * 0.03; text: bridge.weatherValid ? bridge.weatherCondition : "NO DATA" }
+            Text { x: u * 0.15; y: u * 0.20; color: accent; font.pixelSize: u * 0.03; text: "PPT " + bridge.precipitationPercent + "%" }
+            Text { x: u * 0.15; y: u * 0.235; color: accent; font.pixelSize: u * 0.03; text: bridge.currentTempC + "F" }
+            Text { x: u * 0.15; y: u * 0.27; color: accent; font.pixelSize: u * 0.03; text: "+" + bridge.uvIndex }
 
-            Text { x: 0; y: 162; color: fg; font.pixelSize: 24; font.bold: true; text: "HP"; }
-            Text { x: width - 26; y: 162; color: fg; font.pixelSize: 24; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0; }
+            Text { x: 0; y: u * 0.30; color: fg; font.pixelSize: u * 0.065; font.bold: true; text: "HP" }
+            Text { x: width - u * 0.06; y: u * 0.30; color: fg; font.pixelSize: u * 0.065; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0 }
             PipboySegmentBar {
-                x: 0; y: 190
-                width: parent.width; height: 8
+                x: 0
+                y: u * 0.36
+                width: rightCol.width
+                height: u * 0.016
                 value: bridge.heartRateValid ? bridge.heartRate : 0
                 maximum: 200
                 activeColor: fg
                 passiveColor: dim
             }
-            Text { x: 0; y: 202; color: fg; font.pixelSize: 24; font.bold: true; text: "RAD 0"; }
+            Text { x: 0; y: u * 0.375; color: fg; font.pixelSize: u * 0.06; font.bold: true; text: "RAD 0" }
         }
 
-        Text { x: 0; y: stage.height - 30; color: fg; font.pixelSize: 24; font.bold: true; text: "AP: " + bridge.batteryPercent + "/" + bridge.batteryPercent }
-        Text { x: stage.width * 0.34; y: stage.height - 12; color: accent; font.pixelSize: 11; text: "PIP v6.0_CLASSIC  en_US" }
+        Text {
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
+            color: fg
+            font.pixelSize: u * 0.06
+            font.bold: true
+            text: "AP: " + bridge.batteryPercent + "/" + bridge.batteryPercent
+        }
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            color: accent
+            font.pixelSize: u * 0.023
+            text: "PIP v6.0_CLASSIC  en_US"
+        }
     }
 
     PipboyScanlines {
