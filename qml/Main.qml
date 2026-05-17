@@ -43,14 +43,14 @@ Item {
     Item {
         id: stage
         anchors.centerIn: parent
-        width: parent.width - u * 0.20
+        width: parent.width - u * 0.22
         height: width
 
         property real gap: u * 0.01
-        property real leftW: width * 0.57
-        property real rightW: width * 0.40
+        property real leftW: width * 0.53
+        property real rightW: width * 0.43
         property real headH: u * 0.06
-        property real dateH: u * 0.11
+        property real dateH: u * 0.125
         property real dataH: u * 0.11
         property real timeH: u * 0.225
 
@@ -82,8 +82,9 @@ Item {
             color: "transparent"
             border.width: 2
             border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.038; font.bold: true; text: Fmt.two(now.getDate()) + "  " + Qt.formatDate(now, "MMM").toUpperCase() + "  " + now.getFullYear() }
-            Text { x: 8; y: height - u * 0.04; color: accent; font.pixelSize: u * 0.026; font.bold: true; text: "WD " + Qt.formatDate(now, "ddd").toUpperCase() + "  w " + Fmt.weekOfYear(now) + "  d " + Fmt.dayOfYear(now) }
+            clip: true
+            Text { x: 8; y: 10; color: fg; font.pixelSize: u * 0.031; font.bold: true; text: Fmt.two(now.getDate()) + "  " + Qt.formatDate(now, "MMM").toUpperCase() + "  " + now.getFullYear() }
+            Text { x: 8; y: 38; color: accent; font.pixelSize: u * 0.022; font.bold: true; text: "WD " + Qt.formatDate(now, "ddd").toUpperCase() + "  w " + Fmt.weekOfYear(now) + "  d " + Fmt.dayOfYear(now) }
         }
 
         Rectangle {
@@ -96,6 +97,7 @@ Item {
             color: "transparent"
             border.width: 2
             border.color: fg
+            clip: true
             Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.04; font.bold: true; text: "DATA    MAP" }
             Text { x: 14; y: u * 0.045; color: fg; font.pixelSize: u * 0.06; font.bold: true; text: bridge.stepsValid ? Math.min(99, Math.floor(bridge.steps / 100)).toString() : "0" }
             Image {
@@ -118,22 +120,20 @@ Item {
             color: "transparent"
             border.width: 2
             border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.026; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
-            Text { x: 8; y: u * 0.048; color: fg; font.pixelSize: u * 0.105; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
-            Image { x: 8; y: height - u * 0.045; width: u * 0.032; height: u * 0.032; fillMode: Image.PreserveAspectFit; source: Qt.resolvedUrl("assets/other-icons/Radio.png") }
-            Text { x: u * 0.043; y: height - u * 0.046; color: accent; font.pixelSize: u * 0.030; font.bold: true; text: "App shortcut" }
+            clip: true
+            Text { x: 8; y: u * 0.053; color: fg; font.pixelSize: u * 0.095; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
         }
 
         Item {
             id: rightCol
             anchors.top: dateBox.top
-            anchors.left: dateBox.right
-            anchors.leftMargin: stage.gap
+            anchors.topMargin: u * 0.015
+            anchors.right: parent.right
             width: stage.rightW
             height: timeBox.y + timeBox.height - y
 
-            Text { id: coreLabel; x: 0; y: 0; color: fg; font.pixelSize: u * 0.046; font.bold: true; text: "CORE" }
-            Text { x: width - u * 0.11; y: 0; color: fg; font.pixelSize: u * 0.046; font.bold: true; text: bridge.batteryPercent + "%" }
+            Text { id: coreLabel; x: 0; y: 0; color: fg; font.pixelSize: u * 0.041; font.bold: true; text: "CORE" }
+            Text { x: width - u * 0.10; y: 0; color: fg; font.pixelSize: u * 0.041; font.bold: true; text: bridge.batteryPercent + "%" }
             Text { id: tempLabel; x: 0; y: coreLabel.y + coreLabel.height - u * 0.01; color: dim; font.pixelSize: u * 0.031; text: "Temp " + bridge.currentTempC + " C*" }
             Image {
                 x: width - u * 0.055
@@ -156,14 +156,14 @@ Item {
                 visible: !cfg.simplifiedMode
             }
 
-            Text { id: statLabel; x: chara.x + chara.width + u * 0.02; y: chara.y; color: fg; font.pixelSize: u * 0.062; font.bold: true; text: "STAT" }
+            Text { id: statLabel; x: chara.x + chara.width + u * 0.02; y: chara.y; color: fg; font.pixelSize: u * 0.055; font.bold: true; text: "STAT" }
             Text { x: statLabel.x; y: statLabel.y + statLabel.height - u * 0.01; color: fg; font.pixelSize: u * 0.027; text: bridge.weatherValid ? bridge.weatherCondition : "NO DATA" }
             Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.02; color: accent; font.pixelSize: u * 0.027; text: "PPT " + bridge.precipitationPercent + "%" }
             Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.05; color: accent; font.pixelSize: u * 0.027; text: bridge.currentTempC + "F" }
             Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.08; color: accent; font.pixelSize: u * 0.027; text: "+" + bridge.uvIndex }
 
-            Text { id: hpLabel; x: 0; y: chara.y + chara.height + u * 0.01; color: fg; font.pixelSize: u * 0.057; font.bold: true; text: "HP" }
-            Text { x: width - u * 0.055; y: hpLabel.y; color: fg; font.pixelSize: u * 0.057; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0 }
+            Text { id: hpLabel; x: 0; y: chara.y + chara.height + u * 0.013; color: fg; font.pixelSize: u * 0.050; font.bold: true; text: "HP" }
+            Text { x: width - u * 0.050; y: hpLabel.y; color: fg; font.pixelSize: u * 0.050; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0 }
             PipboySegmentBar {
                 x: 0
                 y: hpLabel.y + hpLabel.height + u * 0.008
@@ -174,14 +174,15 @@ Item {
                 activeColor: fg
                 passiveColor: dim
             }
-            Text { x: 0; y: hpLabel.y + hpLabel.height + u * 0.03; color: fg; font.pixelSize: u * 0.052; font.bold: true; text: "RAD 0" }
+            Text { x: 0; y: hpLabel.y + hpLabel.height + u * 0.028; color: fg; font.pixelSize: u * 0.047; font.bold: true; text: "RAD 0" }
         }
 
         Text {
             anchors.left: parent.left
+            anchors.leftMargin: u * 0.01
             anchors.bottom: parent.bottom
             color: fg
-            font.pixelSize: u * 0.06
+            font.pixelSize: u * 0.053
             font.bold: true
             text: "AP: " + bridge.batteryPercent + "/" + bridge.batteryPercent
         }
