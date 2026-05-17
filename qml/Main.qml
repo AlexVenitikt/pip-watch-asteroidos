@@ -44,48 +44,48 @@ Item {
     Item {
         id: stage
         anchors.centerIn: parent
-        width: parent.width - 44
+        width: parent.width - 72
         height: width
         x: burninOffsetX
         y: burninOffsetY
 
-        readonly property real gap: 6
-        readonly property real leftW: width * 0.52
-        readonly property real rightW: width * 0.44
-        readonly property real topH: 32
+        readonly property real gap: 5
+        readonly property real leftW: width * 0.55
+        readonly property real rightW: width * 0.42
+        readonly property real topH: 28
         readonly property real y1: topH + gap
-        readonly property real hDate: 56
-        readonly property real hDataMap: 56
-        readonly property real hTime: 126
+        readonly property real hDate: 52
+        readonly property real hDataMap: 52
+        readonly property real hTime: 118
 
         Rectangle {
             x: width * 0.36; y: 0
             width: width * 0.28; height: stage.topH
             color: "transparent"; border.width: 2; border.color: fg
-            Text { anchors.centerIn: parent; color: fg; font.pixelSize: 16; font.bold: true; text: "VAULT-TEC" }
+            Text { anchors.centerIn: parent; color: fg; font.pixelSize: 14; font.bold: true; text: "VAULT-TEC" }
         }
 
         Rectangle {
             x: 0; y: stage.y1; width: stage.leftW; height: stage.hDate
             color: "transparent"; border.width: 2; border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: 18; font.bold: true; text: Fmt.two(now.getDate()) + "  " + Qt.formatDate(now, "MMM").toUpperCase() + "  " + now.getFullYear() }
-            Text { x: 8; y: 30; color: accent; font.pixelSize: 14; font.bold: true; text: "WD " + Qt.formatDate(now, "ddd").toUpperCase() + "  w " + Fmt.weekOfYear(now) + "  d " + Fmt.dayOfYear(now) }
+            Text { x: 8; y: 4; color: fg; font.pixelSize: 16; font.bold: true; text: Fmt.two(now.getDate()) + "  " + Qt.formatDate(now, "MMM").toUpperCase() + "  " + now.getFullYear() }
+            Text { x: 8; y: 30; color: accent; font.pixelSize: 12; font.bold: true; text: "WD " + Qt.formatDate(now, "ddd").toUpperCase() + "  w " + Fmt.weekOfYear(now) + "  d " + Fmt.dayOfYear(now) }
         }
 
         Rectangle {
             x: 0; y: stage.y1 + stage.hDate + stage.gap; width: stage.leftW; height: stage.hDataMap
             color: "transparent"; border.width: 2; border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: 18; font.bold: true; text: "DATA    MAP" }
-            Text { x: 20; y: 24; color: fg; font.pixelSize: 30; font.bold: true; text: bridge.stepsValid ? Math.min(99, Math.floor(bridge.steps / 100)).toString() : "0" }
-            Text { x: 118; y: 24; color: fg; font.pixelSize: 24; font.bold: true; text: "<>" }
+            Text { x: 8; y: 4; color: fg; font.pixelSize: 16; font.bold: true; text: "DATA    MAP" }
+            Text { x: 18; y: 22; color: fg; font.pixelSize: 28; font.bold: true; text: bridge.stepsValid ? Math.min(99, Math.floor(bridge.steps / 100)).toString() : "0" }
+            Text { x: 118; y: 23; color: fg; font.pixelSize: 20; font.bold: true; text: "<>" }
         }
 
         Rectangle {
             x: 0; y: stage.y1 + stage.hDate + stage.gap + stage.hDataMap + stage.gap; width: stage.leftW; height: stage.hTime
             color: "transparent"; border.width: 2; border.color: fg
-            Text { x: 8; y: 4; color: fg; font.pixelSize: 14; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
-            Text { x: 8; y: 24; color: fg; font.pixelSize: 52; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
-            Text { x: 8; y: 92; color: accent; font.pixelSize: 20; font.bold: true; text: "App shortcut" }
+            Text { x: 8; y: 4; color: fg; font.pixelSize: 13; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
+            Text { x: 8; y: 24; color: fg; font.pixelSize: 56; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
+            Text { x: 8; y: 92; color: accent; font.pixelSize: 16; font.bold: true; text: "App shortcut" }
         }
 
         Item {
@@ -94,40 +94,40 @@ Item {
             width: stage.rightW
             height: stage.hDate + stage.gap + stage.hDataMap + stage.gap + stage.hTime
 
-            Text { x: 0; y: 0; color: fg; font.pixelSize: 32; font.bold: true; text: "CORE" }
-            Text { x: width - 84; y: 0; color: fg; font.pixelSize: 34; font.bold: true; text: bridge.batteryPercent + "%" }
-            Text { x: 0; y: 32; color: dim; font.pixelSize: 18; text: "Temp " + bridge.currentTempC + " C*" }
+            Text { x: 0; y: 0; color: fg; font.pixelSize: 20; font.bold: true; text: "CORE" }
+            Text { x: width - 58; y: 0; color: fg; font.pixelSize: 20; font.bold: true; text: bridge.batteryPercent + "%" }
+            Text { x: 0; y: 24; color: dim; font.pixelSize: 14; text: "Temp " + bridge.currentTempC + " C*" }
 
             PipboyCharacter {
-                x: 10; y: 58
-                width: 92; height: 118
+                x: 0; y: 48
+                width: 78; height: 98
                 fg: root.fg
                 ambientMode: root.ambientMode || cfg.simplifiedMode
                 state: bridge.steps > 3000 ? "walking" : "resting"
                 visible: !cfg.simplifiedMode
             }
 
-            Text { x: 108; y: 64; color: fg; font.pixelSize: 36; font.bold: true; text: "STAT" }
-            Text { x: 108; y: 98; color: fg; font.pixelSize: 18; text: bridge.weatherValid ? bridge.weatherCondition : "NO DATA" }
-            Text { x: 108; y: 122; color: accent; font.pixelSize: 16; text: "PPT " + bridge.precipitationPercent + "%" }
-            Text { x: 108; y: 142; color: accent; font.pixelSize: 16; text: bridge.currentTempC + "F" }
-            Text { x: 108; y: 162; color: accent; font.pixelSize: 16; text: "+" + bridge.uvIndex }
+            Text { x: 82; y: 54; color: fg; font.pixelSize: 22; font.bold: true; text: "STAT" }
+            Text { x: 82; y: 80; color: fg; font.pixelSize: 11; text: bridge.weatherValid ? bridge.weatherCondition : "NO DATA" }
+            Text { x: 82; y: 98; color: accent; font.pixelSize: 11; text: "PPT " + bridge.precipitationPercent + "%" }
+            Text { x: 82; y: 114; color: accent; font.pixelSize: 11; text: bridge.currentTempC + "F" }
+            Text { x: 82; y: 130; color: accent; font.pixelSize: 11; text: "+" + bridge.uvIndex }
 
-            Text { x: 0; y: 182; color: fg; font.pixelSize: 32; font.bold: true; text: "HP"; }
-            Text { x: width - 36; y: 182; color: fg; font.pixelSize: 32; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0; }
+            Text { x: 0; y: 152; color: fg; font.pixelSize: 24; font.bold: true; text: "HP"; }
+            Text { x: width - 26; y: 152; color: fg; font.pixelSize: 24; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0; }
             PipboySegmentBar {
-                x: 0; y: 216
+                x: 0; y: 178
                 width: parent.width; height: 8
                 value: bridge.heartRateValid ? bridge.heartRate : 0
                 maximum: 200
                 activeColor: fg
                 passiveColor: dim
             }
-            Text { x: 0; y: 228; color: fg; font.pixelSize: 30; font.bold: true; text: "RAD 0"; }
+            Text { x: 0; y: 190; color: fg; font.pixelSize: 24; font.bold: true; text: "RAD 0"; }
         }
 
-        Text { x: 0; y: stage.height - 40; color: fg; font.pixelSize: 36; font.bold: true; text: "AP: " + bridge.batteryPercent + "/" + bridge.batteryPercent }
-        Text { x: stage.width * 0.34; y: stage.height - 14; color: accent; font.pixelSize: 12; text: "PIP v6.0_CLASSIC  en_US" }
+        Text { x: 0; y: stage.height - 34; color: fg; font.pixelSize: 26; font.bold: true; text: "AP: " + bridge.batteryPercent + "/" + bridge.batteryPercent }
+        Text { x: stage.width * 0.34; y: stage.height - 12; color: accent; font.pixelSize: 11; text: "PIP v6.0_CLASSIC  en_US" }
     }
 
     PipboyScanlines {
