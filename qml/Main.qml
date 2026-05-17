@@ -56,7 +56,7 @@ Item {
         readonly property real y1: topH + gap
         readonly property real hDate: 52
         readonly property real hDataMap: 52
-        readonly property real hTime: 118
+        readonly property real hTime: 108
 
         Rectangle {
             x: width * 0.36; y: 0
@@ -68,7 +68,7 @@ Item {
                 height: parent.height - 6
                 fillMode: Image.PreserveAspectFit
                 smooth: true
-                source: "assets/logos/Vault-Tec.png"
+                source: Qt.resolvedUrl("assets/logos/Vault-Tec.png")
             }
         }
 
@@ -89,7 +89,7 @@ Item {
                 width: 24; height: 24
                 fillMode: Image.PreserveAspectFit
                 smooth: true
-                source: "assets/map-icons/Vault.png"
+                source: Qt.resolvedUrl("assets/map-icons/Vault.png")
             }
         }
 
@@ -97,15 +97,15 @@ Item {
             x: 0; y: stage.y1 + stage.hDate + stage.gap + stage.hDataMap + stage.gap; width: stage.leftW; height: stage.hTime
             color: "transparent"; border.width: 2; border.color: fg
             Text { x: 8; y: 4; color: fg; font.pixelSize: 13; text: bridge.timezoneAbbr + "   " + (bridge.alarmEnabled ? bridge.nextAlarm : "--:--") }
-            Text { x: 8; y: 24; color: fg; font.pixelSize: 56; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
+            Text { x: 8; y: 24; color: fg; font.pixelSize: 46; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
             Image {
-                x: 8; y: 92
+                x: 8; y: 82
                 width: 20; height: 20
                 fillMode: Image.PreserveAspectFit
                 smooth: true
-                source: "assets/other-icons/Radio.png"
+                source: Qt.resolvedUrl("assets/other-icons/Radio.png")
             }
-            Text { x: 32; y: 92; color: accent; font.pixelSize: 16; font.bold: true; text: "App shortcut" }
+            Text { x: 32; y: 82; color: accent; font.pixelSize: 16; font.bold: true; text: "App shortcut" }
         }
 
         Item {
@@ -122,7 +122,7 @@ Item {
                 width: 20; height: 20
                 fillMode: Image.PreserveAspectFit
                 smooth: true
-                source: bridge.charging ? "assets/other-icons/Charge On.png" : "assets/other-icons/Charge Off.png"
+                source: bridge.charging ? Qt.resolvedUrl("assets/other-icons/Charge On.png") : Qt.resolvedUrl("assets/other-icons/Charge Off.png")
             }
 
             PipboyCharacter {
@@ -140,20 +140,20 @@ Item {
             Text { x: 82; y: 114; color: accent; font.pixelSize: 11; text: bridge.currentTempC + "F" }
             Text { x: 82; y: 130; color: accent; font.pixelSize: 11; text: "+" + bridge.uvIndex }
 
-            Text { x: 0; y: 152; color: fg; font.pixelSize: 24; font.bold: true; text: "HP"; }
-            Text { x: width - 26; y: 152; color: fg; font.pixelSize: 24; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0; }
+            Text { x: 0; y: 162; color: fg; font.pixelSize: 24; font.bold: true; text: "HP"; }
+            Text { x: width - 26; y: 162; color: fg; font.pixelSize: 24; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0; }
             PipboySegmentBar {
-                x: 0; y: 178
+                x: 0; y: 190
                 width: parent.width; height: 8
                 value: bridge.heartRateValid ? bridge.heartRate : 0
                 maximum: 200
                 activeColor: fg
                 passiveColor: dim
             }
-            Text { x: 0; y: 190; color: fg; font.pixelSize: 24; font.bold: true; text: "RAD 0"; }
+            Text { x: 0; y: 202; color: fg; font.pixelSize: 24; font.bold: true; text: "RAD 0"; }
         }
 
-        Text { x: 0; y: stage.height - 34; color: fg; font.pixelSize: 26; font.bold: true; text: "AP: " + bridge.batteryPercent + "/" + bridge.batteryPercent }
+        Text { x: 0; y: stage.height - 30; color: fg; font.pixelSize: 24; font.bold: true; text: "AP: " + bridge.batteryPercent + "/" + bridge.batteryPercent }
         Text { x: stage.width * 0.34; y: stage.height - 12; color: accent; font.pixelSize: 11; text: "PIP v6.0_CLASSIC  en_US" }
     }
 
