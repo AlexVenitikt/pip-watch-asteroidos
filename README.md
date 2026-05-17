@@ -38,6 +38,18 @@ Pip-Boy/Fallout-style HUD watchface for AsteroidOS, optimized for TicWatch Pro 2
 ```bash
 ./scripts/deploy-ssh.sh <watch-ip>
 ```
+If the watch has no `sudo`, use staging + manual root install:
+```bash
+ssh ceres@<watch-ip>
+su
+cp /home/ceres/catfish-pipboy-deploy/watchfaces/catfish-pipboy.qml /usr/share/asteroid-launcher/watchfaces/
+cp -r /home/ceres/catfish-pipboy-deploy/watchfaces/logic /usr/share/asteroid-launcher/watchfaces/
+cp -r /home/ceres/catfish-pipboy-deploy/watchfaces/ui /usr/share/asteroid-launcher/watchfaces/
+cp -r /home/ceres/catfish-pipboy-deploy/watchfaces/settings /usr/share/asteroid-launcher/watchfaces/
+cp /home/ceres/catfish-pipboy-deploy/watchfaces-preview/480x480/catfish-pipboy.svg /usr/share/asteroid-launcher/watchfaces-preview/480x480/
+cp /home/ceres/catfish-pipboy-deploy/watchface-img/catfish-pipboy.svg /usr/share/asteroid-launcher/watchface-img/
+systemctl restart user@1000.service
+```
 4. Deploy via ADB:
 ```bash
 ./scripts/deploy-adb.sh
