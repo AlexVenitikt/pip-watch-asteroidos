@@ -125,7 +125,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 font {
                     family: "monospace"
-                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.15225
+                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.1827
                     bold: true
                     letterSpacing: 0
                 }
