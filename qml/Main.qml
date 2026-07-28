@@ -1,202 +1,279 @@
 import QtQuick 2.6
 import "logic/pipboyFormatter.js" as Fmt
 import "ui"
-import "logic"
-import "settings"
 
 Item {
-    id: root
-    width: 480
-    height: 480
-    clip: true
+    id: app
 
+    width: parent ? parent.width : 480
+    height: parent ? parent.height : 480
+
+    property int safeSize: Math.min(width, height)
     property bool ambientMode: false
-    property var now: new Date()
-    property color fg: "#00ff44"
-    property color dim: "#0a7d2c"
-    property color bg: "#031107"
-    property color accent: "#7aff9e"
-    property real u: height
+    property date now: new Date()
+    property int batteryPercentStub: 87
+    property int heartRateStub: 72
+    property int stepsStub: 8420
+    property int radStub: 21
 
-    PipboySettings { id: cfg }
-    PipboyDataBridge { id: bridge; ambientMode: root.ambientMode }
+    readonly property color phosphor: ambientMode ? "#80ff77" : "#7aff6a"
+    readonly property color phosphorDim: ambientMode ? "#245f2c" : "#1b6b28"
+    readonly property color amber: "#f2c24a"
+    readonly property color screenBg: "#020905"
 
     Timer {
-        interval: root.ambientMode ? 60000 : (cfg.showSeconds ? 1000 : 15000)
-        running: true
+        interval: ambientMode ? 60000 : 1000
         repeat: true
-        onTriggered: root.now = new Date()
+        running: true
+        triggeredOnStart: true
+        onTriggered: app.now = new Date()
     }
 
-    Rectangle { anchors.fill: parent; color: bg }
-
     Rectangle {
-        anchors.centerIn: parent
-        width: parent.width - u * 0.04
-        height: width
-        radius: width / 2
-        color: "transparent"
-        border.width: 2
-        border.color: dim
+        anchors.fill: parent
+        color: "#000000"
     }
 
     Item {
-        id: stage
+        id: face
+
+        width: app.safeSize
+        height: app.safeSize
         anchors.centerIn: parent
-        width: parent.width - u * 0.22
-        height: width
-
-        property real gap: u * 0.01
-        property real leftW: width * 0.53
-        property real rightW: width * 0.43
-        property real headH: u * 0.06
-        property real dateH: u * 0.125
-        property real dataH: u * 0.11
-        property real timeH: u * 0.225
 
         Rectangle {
-            id: logoBox
-            width: stage.leftW * 0.5
-            height: stage.headH
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            color: "transparent"
-            border.width: 2
-            border.color: fg
-            Image {
-                anchors.fill: parent
-                anchors.margins: 3
-                fillMode: Image.PreserveAspectFit
-                smooth: true
-                source: Qt.resolvedUrl("assets/logos/Vault-Tec.png")
-            }
-        }
-
-        Rectangle {
-            id: dateBox
-            anchors.top: logoBox.bottom
-            anchors.topMargin: stage.gap
-            anchors.left: parent.left
-            width: stage.leftW
-            height: stage.dateH
-            color: "transparent"
-            border.width: 2
-            border.color: fg
-            clip: true
-            Text { x: 8; y: 10; color: fg; font.pixelSize: u * 0.031; font.bold: true; text: Fmt.two(now.getDate()) + "  " + Qt.formatDate(now, "MMM").toUpperCase() + "  " + now.getFullYear() }
-            Text { x: 8; y: 38; color: accent; font.pixelSize: u * 0.022; font.bold: true; text: "WD " + Qt.formatDate(now, "ddd").toUpperCase() + "  w " + Fmt.weekOfYear(now) + "  d " + Fmt.dayOfYear(now) }
-        }
-
-        Rectangle {
-            id: dataBox
-            anchors.top: dateBox.bottom
-            anchors.topMargin: stage.gap
-            anchors.left: parent.left
-            width: stage.leftW
-            height: stage.dataH
-            color: "transparent"
-            border.width: 2
-            border.color: fg
-            clip: true
-            Text { x: 8; y: 4; color: fg; font.pixelSize: u * 0.04; font.bold: true; text: "DATA    MAP" }
-            Text { x: 14; y: u * 0.045; color: fg; font.pixelSize: u * 0.06; font.bold: true; text: bridge.stepsValid ? Math.min(99, Math.floor(bridge.steps / 100)).toString() : "0" }
-            Image {
-                x: width - u * 0.08
-                y: u * 0.05
-                width: u * 0.05
-                height: u * 0.05
-                fillMode: Image.PreserveAspectFit
-                source: Qt.resolvedUrl("assets/map-icons/Vault.png")
-            }
-        }
-
-        Rectangle {
-            id: timeBox
-            anchors.top: dataBox.bottom
-            anchors.topMargin: stage.gap
-            anchors.left: parent.left
-            width: stage.leftW
-            height: stage.timeH
-            color: "transparent"
-            border.width: 2
-            border.color: fg
-            clip: true
-            Text { x: 8; y: u * 0.053; color: fg; font.pixelSize: u * 0.095; font.bold: true; text: Fmt.time24(now, !ambientMode && cfg.showSeconds) }
+            anchors.centerIn: parent
+            width: parent.width
+            height: parent.height
+            radius: width / 2
+            color: app.screenBg
+            border.width: Math.max(1, face.width * 0.009)
+            border.color: app.phosphorDim
         }
 
         Item {
-            id: rightCol
-            anchors.top: dateBox.top
-            anchors.topMargin: u * 0.015
-            anchors.right: parent.right
-            width: stage.rightW
-            height: timeBox.y + timeBox.height - y
+            id: safe
 
-            Text { id: coreLabel; x: 0; y: 0; color: fg; font.pixelSize: u * 0.033; font.bold: true; text: "CORE" }
-            Text { x: width - u * 0.078; y: coreLabel.y + coreLabel.height - u * 0.01; color: fg; font.pixelSize: u * 0.033; font.bold: true; text: bridge.batteryPercent + "%" }
-            Text { id: tempLabel; x: 0; y: coreLabel.y + coreLabel.height + u * 0.020; color: dim; font.pixelSize: u * 0.031; text: "Temp " + bridge.currentTempC + " C*" }
-            Image {
-                x: width - u * 0.055
-                y: tempLabel.y
-                width: u * 0.032
-                height: u * 0.032
-                fillMode: Image.PreserveAspectFit
-                source: bridge.charging ? Qt.resolvedUrl("assets/other-icons/Charge On.png") : Qt.resolvedUrl("assets/other-icons/Charge Off.png")
+            anchors.centerIn: parent
+            width: parent.width * 0.84
+            height: width
+
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+                border.width: Math.max(1, safe.width * 0.004)
+                border.color: app.phosphorDim
+                opacity: 0.55
+            }
+
+            Repeater {
+                model: 60
+                Item {
+                    anchors.fill: safe
+                    rotation: index * 6
+
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        y: safe.height * 0.012
+                        width: index % 5 === 0 ? safe.width * 0.010 : safe.width * 0.005
+                        height: index % 5 === 0 ? safe.height * 0.042 : safe.height * 0.024
+                        radius: width / 2
+                        color: index % 15 === 0 ? app.amber : app.phosphorDim
+                        opacity: index % 5 === 0 ? 0.9 : 0.5
+                    }
+                }
+            }
+
+            Text {
+                id: tabs
+                anchors.horizontalCenter: parent.horizontalCenter
+                y: safe.height * 0.075
+                color: app.phosphor
+                text: "PWR    STAT    RAD"
+                font {
+                    family: "monospace"
+                    pixelSize: safe.height * 0.055
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Rectangle {
+                x: safe.width * 0.08
+                y: safe.height * 0.17
+                width: safe.width * 0.84
+                height: Math.max(2, safe.height * 0.006)
+                color: app.phosphor
+            }
+
+            Text {
+                id: timeText
+                x: safe.width * 0.075
+                y: safe.height * 0.215
+                width: safe.width * 0.58
+                height: safe.height * 0.23
+                color: app.phosphor
+                text: Fmt.time24(app.now, !app.ambientMode)
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                font {
+                    family: "monospace"
+                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.155
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                x: safe.width * 0.09
+                y: safe.height * 0.455
+                width: safe.width * 0.53
+                color: app.phosphor
+                text: Qt.formatDate(app.now, "ddd").toUpperCase() + "  " + Fmt.dateDDMMYYYY(app.now)
+                font {
+                    family: "monospace"
+                    pixelSize: safe.height * 0.044
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                x: safe.width * 0.09
+                y: safe.height * 0.515
+                width: safe.width * 0.52
+                color: app.phosphorDim
+                text: "DOY " + Fmt.dayOfYear(app.now) + "   WOY " + Fmt.weekOfYear(app.now)
+                font {
+                    family: "monospace"
+                    pixelSize: safe.height * 0.033
+                    letterSpacing: 0
+                }
             }
 
             PipboyCharacter {
-                id: chara
-                x: 0
-                y: tempLabel.y + tempLabel.height + u * 0.01
-                width: u * 0.12
-                height: u * 0.155
-                fg: root.fg
-                ambientMode: root.ambientMode || cfg.simplifiedMode
-                state: bridge.steps > 3000 ? "walking" : "resting"
-                visible: !cfg.simplifiedMode
+                x: safe.width * 0.675
+                y: safe.height * 0.245
+                width: safe.width * 0.16
+                height: safe.height * 0.22
+                fg: app.phosphor
+                ambientMode: app.ambientMode
+                state: "walking"
+                opacity: app.ambientMode ? 0.0 : 1.0
             }
 
-            Text { id: statLabel; x: chara.x + chara.width + u * 0.02; y: chara.y; color: fg; font.pixelSize: u * 0.055; font.bold: true; text: "STAT" }
-            Text { x: statLabel.x; y: statLabel.y + statLabel.height - u * 0.01; color: fg; font.pixelSize: u * 0.027; text: bridge.weatherValid ? bridge.weatherCondition : "NO DATA" }
-            Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.02; color: accent; font.pixelSize: u * 0.027; text: "PPT " + bridge.precipitationPercent + "%" }
-            Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.05; color: accent; font.pixelSize: u * 0.027; text: bridge.currentTempC + "F" }
-            Text { x: statLabel.x; y: statLabel.y + statLabel.height + u * 0.08; color: accent; font.pixelSize: u * 0.027; text: "+" + bridge.uvIndex }
+            Item {
+                id: batteryPanel
+                x: safe.width * 0.63
+                y: safe.height * 0.48
+                width: safe.width * 0.26
+                height: safe.height * 0.18
 
-            Text { id: hpLabel; x: 0; y: chara.y + chara.height + u * 0.013; color: fg; font.pixelSize: u * 0.050; font.bold: true; text: "HP" }
-            Text { x: width - u * 0.050; y: hpLabel.y; color: fg; font.pixelSize: u * 0.050; font.bold: true; text: bridge.heartRateValid ? bridge.heartRate : 0 }
-            PipboySegmentBar {
-                x: 0
-                y: hpLabel.y + hpLabel.height + u * 0.008
-                width: rightCol.width
-                height: u * 0.016
-                value: bridge.heartRateValid ? bridge.heartRate : 0
-                maximum: 200
-                activeColor: fg
-                passiveColor: dim
+                Text {
+                    x: 0
+                    y: 0
+                    color: app.phosphor
+                    text: "PWR " + app.batteryPercentStub + "%"
+                    font {
+                        family: "monospace"
+                        pixelSize: batteryPanel.height * 0.28
+                        bold: true
+                        letterSpacing: 0
+                    }
+                }
+
+                PipboySegmentBar {
+                    x: 0
+                    y: batteryPanel.height * 0.48
+                    width: parent.width
+                    height: batteryPanel.height * 0.24
+                    value: app.batteryPercentStub
+                    maximum: 100
+                    segments: 8
+                    activeColor: app.batteryPercentStub <= 20 ? app.amber : app.phosphor
+                    passiveColor: app.phosphorDim
+                }
+
+                Text {
+                    x: 0
+                    y: batteryPanel.height * 0.76
+                    color: app.phosphorDim
+                    text: "STUB"
+                    font {
+                        family: "monospace"
+                        pixelSize: batteryPanel.height * 0.18
+                        letterSpacing: 0
+                    }
+                }
             }
-            Text { x: 0; y: hpLabel.y + hpLabel.height + u * 0.028; color: fg; font.pixelSize: u * 0.047; font.bold: true; text: "RAD 0" }
+
+            Rectangle {
+                id: lowerPanel
+                x: safe.width * 0.095
+                y: safe.height * 0.645
+                width: safe.width * 0.81
+                height: safe.height * 0.17
+                color: "transparent"
+                border.width: Math.max(1, safe.width * 0.004)
+                border.color: app.phosphor
+            }
+
+            Text {
+                x: lowerPanel.x + lowerPanel.width * 0.07
+                y: lowerPanel.y + lowerPanel.height * 0.18
+                color: app.phosphor
+                text: "HP " + app.heartRateStub
+                font {
+                    family: "monospace"
+                    pixelSize: lowerPanel.height * 0.29
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                x: lowerPanel.x + lowerPanel.width * 0.39
+                y: lowerPanel.y + lowerPanel.height * 0.18
+                color: app.phosphor
+                text: "ST " + app.stepsStub
+                font {
+                    family: "monospace"
+                    pixelSize: lowerPanel.height * 0.29
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                x: lowerPanel.x + lowerPanel.width * 0.71
+                y: lowerPanel.y + lowerPanel.height * 0.18
+                color: app.amber
+                text: "RAD " + app.radStub
+                font {
+                    family: "monospace"
+                    pixelSize: lowerPanel.height * 0.29
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                anchors.horizontalCenter: safe.horizontalCenter
+                y: safe.height * 0.855
+                color: app.phosphorDim
+                text: app.ambientMode ? "PIP-BOY ASTEROID  AMBIENT" : "PIP-BOY ASTEROID  MVP"
+                font {
+                    family: "monospace"
+                    pixelSize: safe.height * 0.031
+                    letterSpacing: 0
+                }
+            }
         }
 
-        Text {
-            anchors.left: parent.left
-            anchors.leftMargin: u * 0.03
-            anchors.bottom: parent.bottom
-            color: fg
-            font.pixelSize: u * 0.053
-            font.bold: true
-            text: "AP: " + bridge.batteryPercent + "/" + bridge.batteryPercent
+        PipboyScanlines {
+            anchors.fill: parent
+            enabledFx: !app.ambientMode
+            lineColor: "#2600ff44"
         }
-        Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            color: accent
-            font.pixelSize: u * 0.023
-            text: "PIP v6.0_CLASSIC  en_US"
-        }
-    }
-
-    PipboyScanlines {
-        anchors.fill: parent
-        enabledFx: !ambientMode && !cfg.simplifiedMode
     }
 }
