@@ -16,8 +16,17 @@ The generated concept sheet is stored at `docs/pipboy-design-concepts.png`.
 - Good target for AOD/low-power mode after the normal face is stable.
 
 ## Selected MVP Direction
-Implement a hybrid of A and C: classic Pip-Boy-like composition in normal mode,
-with an `ambientMode` property that removes seconds, scanlines, and animation.
+Implement `A CLASSIC`: a readable classic Pip-Boy-like composition in normal
+mode, with an `ambientMode` property that removes seconds, scanlines, and
+animation.
+
+User-requested A Classic adjustments:
+- Replace the repeated top `PWR STAT RAD` labels with `VAULT-TEC`.
+- Keep seconds away from the character by rendering seconds as a small separate
+  `SEC NN` readout.
+- Use a more character-like original QML mascot silhouette, inspired by the
+  walking cartoon reference but not copied from it.
+- Lower status strip: `PWR` battery percent, `STAT` steps, `HP` heart rate.
 
 ## Rendered MVP Preview
 The current QML render is stored at `docs/qmlscene-preview.png`.

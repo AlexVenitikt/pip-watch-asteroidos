@@ -10,7 +10,7 @@ on the target image.
 - Round 480x480-first layout using `safeSize = min(width, height)`.
 - Large 24h time, date, day-of-year, and week-of-year.
 - Pip-Boy-like CRT HUD styling with scanlines and simple geometric character.
-- PWR/HP/ST/RAD status strip.
+- `VAULT-TEC` header and lower `PWR` / `STAT` / `HP` status strip.
 - `ambientMode` property for reduced seconds/animation/scanline behavior.
 - Qt Creator project file: `pip-boy-asteroidos.qmlproject`.
 
@@ -92,8 +92,8 @@ Ubuntu VM.
 
 ## Stubs and Research Items
 
-- `batteryPercentStub`, `heartRateStub`, `stepsStub`, and `radStub` are static
-  placeholders in `qml/Main.qml`.
+- `batteryPercentStub`, `heartRateStub`, and `stepsStub` are static placeholders
+  in `qml/Main.qml`.
 - Battery/charging integration is expected to use AsteroidOS/Nemo MCE, but the
   exact QML module/object must be confirmed on the target image.
 - Steps, heart-rate, weather, notifications, Bluetooth, and alarms depend on

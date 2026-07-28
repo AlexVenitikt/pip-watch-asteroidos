@@ -14,7 +14,6 @@ Item {
     property int batteryPercentStub: 87
     property int heartRateStub: 72
     property int stepsStub: 8420
-    property int radStub: 21
 
     readonly property color phosphor: ambientMode ? "#80ff77" : "#7aff6a"
     readonly property color phosphorDim: ambientMode ? "#245f2c" : "#1b6b28"
@@ -89,10 +88,10 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: safe.height * 0.075
                 color: app.phosphor
-                text: "PWR    STAT    RAD"
+                text: "VAULT-TEC"
                 font {
                     family: "monospace"
-                    pixelSize: safe.height * 0.055
+                    pixelSize: safe.height * 0.062
                     bold: true
                     letterSpacing: 0
                 }
@@ -110,15 +109,29 @@ Item {
                 id: timeText
                 x: safe.width * 0.075
                 y: safe.height * 0.215
-                width: safe.width * 0.58
+                width: safe.width * 0.48
                 height: safe.height * 0.23
                 color: app.phosphor
-                text: Fmt.time24(app.now, !app.ambientMode)
+                text: Fmt.time24(app.now, false)
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 font {
                     family: "monospace"
-                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.155
+                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.172
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                x: safe.width * 0.10
+                y: safe.height * 0.425
+                width: safe.width * 0.28
+                color: app.phosphorDim
+                text: app.ambientMode ? "" : "SEC " + Fmt.two(app.now.getSeconds())
+                font {
+                    family: "monospace"
+                    pixelSize: safe.height * 0.036
                     bold: true
                     letterSpacing: 0
                 }
@@ -152,58 +165,29 @@ Item {
             }
 
             PipboyCharacter {
-                x: safe.width * 0.675
-                y: safe.height * 0.245
-                width: safe.width * 0.16
-                height: safe.height * 0.22
+                x: safe.width * 0.64
+                y: safe.height * 0.205
+                width: safe.width * 0.24
+                height: safe.height * 0.31
                 fg: app.phosphor
+                dim: app.phosphorDim
                 ambientMode: app.ambientMode
                 state: "walking"
                 opacity: app.ambientMode ? 0.0 : 1.0
             }
 
-            Item {
-                id: batteryPanel
-                x: safe.width * 0.63
-                y: safe.height * 0.48
-                width: safe.width * 0.26
-                height: safe.height * 0.18
-
-                Text {
-                    x: 0
-                    y: 0
-                    color: app.phosphor
-                    text: "PWR " + app.batteryPercentStub + "%"
-                    font {
-                        family: "monospace"
-                        pixelSize: batteryPanel.height * 0.28
-                        bold: true
-                        letterSpacing: 0
-                    }
-                }
-
-                PipboySegmentBar {
-                    x: 0
-                    y: batteryPanel.height * 0.48
-                    width: parent.width
-                    height: batteryPanel.height * 0.24
-                    value: app.batteryPercentStub
-                    maximum: 100
-                    segments: 8
-                    activeColor: app.batteryPercentStub <= 20 ? app.amber : app.phosphor
-                    passiveColor: app.phosphorDim
-                }
-
-                Text {
-                    x: 0
-                    y: batteryPanel.height * 0.76
-                    color: app.phosphorDim
-                    text: "STUB"
-                    font {
-                        family: "monospace"
-                        pixelSize: batteryPanel.height * 0.18
-                        letterSpacing: 0
-                    }
+            Text {
+                x: safe.width * 0.65
+                y: safe.height * 0.525
+                width: safe.width * 0.22
+                color: app.phosphorDim
+                text: app.ambientMode ? "" : "STATUS OK"
+                horizontalAlignment: Text.AlignHCenter
+                font {
+                    family: "monospace"
+                    pixelSize: safe.height * 0.034
+                    bold: true
+                    letterSpacing: 0
                 }
             }
 
@@ -222,10 +206,10 @@ Item {
                 x: lowerPanel.x + lowerPanel.width * 0.07
                 y: lowerPanel.y + lowerPanel.height * 0.18
                 color: app.phosphor
-                text: "HP " + app.heartRateStub
+                text: "PWR " + app.batteryPercentStub + "%"
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.29
+                    pixelSize: lowerPanel.height * 0.255
                     bold: true
                     letterSpacing: 0
                 }
@@ -235,10 +219,10 @@ Item {
                 x: lowerPanel.x + lowerPanel.width * 0.39
                 y: lowerPanel.y + lowerPanel.height * 0.18
                 color: app.phosphor
-                text: "ST " + app.stepsStub
+                text: "STAT " + app.stepsStub
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.29
+                    pixelSize: lowerPanel.height * 0.255
                     bold: true
                     letterSpacing: 0
                 }
@@ -247,11 +231,11 @@ Item {
             Text {
                 x: lowerPanel.x + lowerPanel.width * 0.71
                 y: lowerPanel.y + lowerPanel.height * 0.18
-                color: app.amber
-                text: "RAD " + app.radStub
+                color: app.phosphor
+                text: "HP " + app.heartRateStub
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.29
+                    pixelSize: lowerPanel.height * 0.255
                     bold: true
                     letterSpacing: 0
                 }

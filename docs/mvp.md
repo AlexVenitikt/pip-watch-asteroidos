@@ -17,7 +17,8 @@
 - Centered round Pip-Boy-inspired CRT HUD.
 - Large 24h digital time with seconds in normal mode.
 - Date, day-of-year, week-of-year.
-- Status strip: PWR, HP, steps, RAD.
+- Header: `VAULT-TEC`.
+- Status strip: `PWR` battery percent, `STAT` daily steps, `HP` heart rate.
 - Lightweight geometric character in active mode.
 - Scanline overlay in active mode.
 - Ambient-safe visual mode property with seconds/animation removed.
@@ -25,8 +26,8 @@
   the round screen.
 
 ## Stubs / Hypotheses
-- `batteryPercentStub`, `heartRateStub`, `stepsStub`, and `radStub` are static
-  MVP placeholders.
+- `batteryPercentStub`, `heartRateStub`, and `stepsStub` are static MVP
+  placeholders.
 - Real battery integration is expected to use AsteroidOS/Nemo MCE data, but the
   exact import/object should be confirmed on the target image before enabling it.
 - Real steps/heart/weather integration depends on the installed AsteroidOS build
