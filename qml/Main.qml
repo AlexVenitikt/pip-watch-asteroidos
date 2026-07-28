@@ -98,9 +98,9 @@ Item {
             }
 
             Rectangle {
-                x: safe.width * 0.14
+                x: safe.width * 0.20
                 y: safe.height * 0.17
-                width: safe.width * 0.72
+                width: safe.width * 0.60
                 height: Math.max(2, safe.height * 0.006)
                 color: app.phosphor
             }
@@ -153,7 +153,7 @@ Item {
             Rectangle {
                 id: lowerPanel
                 x: safe.width * 0.095
-                y: safe.height * 0.60
+                y: safe.height * 0.555
                 width: safe.width * 0.81
                 height: safe.height * 0.155
                 color: "transparent"
