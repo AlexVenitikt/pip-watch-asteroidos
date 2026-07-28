@@ -1,0 +1,2 @@
+module QtSensors
+HrmSensor 5.0 HrmSensor.qml

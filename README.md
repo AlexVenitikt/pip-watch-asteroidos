@@ -2,8 +2,8 @@
 
 QML-only Pip-Boy-inspired watchface MVP for AsteroidOS on TicWatch Pro 2020
 (`catfish-ext`). The first goal is a stable, centered, readable round
-watchface; device-specific data providers are documented as stubs until tested
-on the target image.
+watchface; device-specific data providers are wired only after they are
+confirmed on the target image.
 
 ## Current MVP
 
@@ -11,6 +11,8 @@ on the target image.
 - Large 24h time, date, day-of-year, and week-of-year.
 - Pip-Boy-like CRT HUD styling with scanlines.
 - `VAULT-TEC` header and lower `PWR` / `STAT` / `HP` status strip.
+- Real `PWR` battery percentage via AsteroidOS/Nemo MCE on the watch.
+- Real live `HP` BPM via AsteroidOS `QtSensors` / `HrmSensor` on the watch.
 - `ambientMode` property for reduced seconds/animation/scanline behavior.
 - Qt Creator project file: `pip-boy-asteroidos.qmlproject`.
 
@@ -52,6 +54,9 @@ Headless screenshot preview:
 
 The screenshot is written to `docs/qmlscene-preview.png`.
 
+Local preview uses `dev/qml-stubs/Nemo/Mce` so Qt Creator/qmlscene can render
+on a development desktop that does not have AsteroidOS Nemo QML modules.
+
 If `qmlscene` is missing, install Qt Creator / Qt declarative tools on the VM.
 The AsteroidOS wiki notes that `qmlscene` is provided by the `qt-creator`
 package for watchface development.
@@ -90,12 +95,14 @@ qmltestrunner -input tests
 If `qmltestrunner` is unavailable, install Qt test/declarative tooling on the
 Ubuntu VM.
 
-## Stubs and Research Items
+## Runtime Data
 
-- `batteryPercentStub`, `heartRateStub`, and `stepsStub` are static placeholders
-  in `qml/Main.qml`.
-- Battery/charging integration is expected to use AsteroidOS/Nemo MCE, but the
-  exact QML module/object must be confirmed on the target image.
+- `PWR`: real battery percentage from `Nemo.Mce` (`MceBatteryLevel`) on
+  AsteroidOS.
+- `STAT`: displays `--` until a confirmed daily step source is available.
+- `HP`: live heart-rate from `QtSensors` (`HrmSensor`); it remains `--` until
+  the sensor reports the first BPM value.
+- Development stubs under `dev/qml-stubs/` exist only for desktop preview.
 - Steps, heart-rate, weather, notifications, Bluetooth, and alarms depend on
   the installed AsteroidOS build and sync client path.
 - Ambient mode is exposed as a property and still needs launcher/display-state

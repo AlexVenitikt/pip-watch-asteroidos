@@ -11,13 +11,26 @@
 
 ## Adapted for AsteroidOS
 - Wear OS complications/actions replaced by watchface-level lightweight interaction (theme cycling on tap).
-- Data ingest is abstracted through `PipboyDataBridge.qml` to map Asteroid-available sources.
+- Data ingest is abstracted through `PipboyDataBridge.qml`; battery is wired to
+  the confirmed AsteroidOS `Nemo.Mce` QML module. Live BPM is isolated in an
+  optional `HrmSensorBridge.qml` loader.
 - Burn-in handling done via micro-offset in ambient updates.
 
 ## Not Fully Reproducible
 - Wear OS companion-specific complication ecosystem and direct app-launch actions are not API-identical on AsteroidOS watchface layer.
-- Guaranteed availability of weather, next alarm, and some telemetry depends on companion integration stack/version (AsteroidOSSync/Gadgetbridge path).
+- Guaranteed availability of weather, next alarm, steps, and heart-rate history
+  depends on companion integration stack/version and installed health services.
 - Dual-display behavior on TicWatch Pro family remains partially constrained by platform support state.
+
+## Current Device Findings
+- `Nemo.Mce` is present on the catfish watch and exposes battery level/state.
+- `asteroid-hrm` is installed as a foreground heart-rate app and its official
+  QML source uses `QtSensors` `HrmSensor { active: true }` with `reading.bpm`.
+- The current launcher log reports `HrmSensor is not a type`, so the watchface
+  keeps HR optional and does not fail when that type is unavailable.
+- `asteroid-health` / `asteroid-sensorlogd` were not installed during the
+  initial device inspection, so daily steps and persisted heart-rate are not
+  treated as available watchface APIs yet.
 
 ## Licensing / Asset Policy
 - No direct reuse of proprietary Fallout assets.

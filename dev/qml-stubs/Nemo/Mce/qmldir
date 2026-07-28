@@ -1,0 +1,3 @@
+module Nemo.Mce
+MceBatteryLevel 1.0 MceBatteryLevel.qml
+MceBatteryState 1.0 MceBatteryState.qml

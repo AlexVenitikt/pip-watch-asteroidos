@@ -1,4 +1,5 @@
 import QtQuick 2.6
+import "logic"
 import "logic/pipboyFormatter.js" as Fmt
 import "ui"
 
@@ -11,9 +12,6 @@ Item {
     property int safeSize: Math.min(width, height)
     property bool ambientMode: false
     property date now: new Date()
-    property int batteryPercentStub: 100
-    property int heartRateStub: 333
-    property int stepsStub: 99999
 
     readonly property color phosphor: ambientMode ? "#80ff77" : "#7aff6a"
     readonly property color phosphorDim: ambientMode ? "#245f2c" : "#1b6b28"
@@ -26,6 +24,10 @@ Item {
         running: true
         triggeredOnStart: true
         onTriggered: app.now = new Date()
+    }
+
+    PipboyDataBridge {
+        id: dataBridge
     }
 
     Rectangle {
@@ -235,7 +237,7 @@ Item {
                 y: lowerPanel.y + lowerPanel.height * 0.48
                 width: lowerPanel.width / 3
                 color: app.phosphor
-                text: app.batteryPercentStub + "%"
+                text: dataBridge.batteryText
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
@@ -250,7 +252,7 @@ Item {
                 y: lowerPanel.y + lowerPanel.height * 0.48
                 width: lowerPanel.width / 3
                 color: app.phosphor
-                text: app.stepsStub
+                text: dataBridge.stepsText
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
@@ -265,7 +267,7 @@ Item {
                 y: lowerPanel.y + lowerPanel.height * 0.48
                 width: lowerPanel.width / 3
                 color: app.phosphor
-                text: app.heartRateStub
+                text: dataBridge.heartRateText
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
