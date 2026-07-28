@@ -51,6 +51,32 @@ Item {
         }
 
         Item {
+            id: dialRing
+
+            anchors.centerIn: parent
+            width: parent.width * 0.94
+            height: width
+
+            Repeater {
+                model: 60
+                Item {
+                    anchors.fill: dialRing
+                    rotation: index * 6
+
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        y: dialRing.height * 0.012
+                        width: index % 5 === 0 ? dialRing.width * 0.010 : dialRing.width * 0.005
+                        height: index % 5 === 0 ? dialRing.height * 0.042 : dialRing.height * 0.024
+                        radius: width / 2
+                        color: index % 15 === 0 ? app.amber : app.phosphorDim
+                        opacity: index % 5 === 0 ? 0.9 : 0.5
+                    }
+                }
+            }
+        }
+
+        Item {
             id: safe
 
             anchors.centerIn: parent
@@ -63,24 +89,6 @@ Item {
                 border.width: Math.max(1, safe.width * 0.004)
                 border.color: app.phosphorDim
                 opacity: 0.55
-            }
-
-            Repeater {
-                model: 60
-                Item {
-                    anchors.fill: safe
-                    rotation: index * 6
-
-                    Rectangle {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        y: safe.height * 0.012
-                        width: index % 5 === 0 ? safe.width * 0.010 : safe.width * 0.005
-                        height: index % 5 === 0 ? safe.height * 0.042 : safe.height * 0.024
-                        radius: width / 2
-                        color: index % 15 === 0 ? app.amber : app.phosphorDim
-                        opacity: index % 5 === 0 ? 0.9 : 0.5
-                    }
-                }
             }
 
             Text {
