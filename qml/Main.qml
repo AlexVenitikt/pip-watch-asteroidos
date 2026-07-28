@@ -152,9 +152,9 @@ Item {
 
             Rectangle {
                 id: lowerPanel
-                x: safe.width * 0.135
+                x: safe.width * 0.17
                 y: safe.height * 0.595
-                width: safe.width * 0.73
+                width: safe.width * 0.66
                 height: safe.height * 0.205
                 color: "transparent"
                 border.width: Math.max(1, safe.width * 0.004)
