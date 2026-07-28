@@ -152,9 +152,9 @@ Item {
 
             Rectangle {
                 id: lowerPanel
-                x: safe.width * 0.095
+                x: safe.width * 0.135
                 y: safe.height * 0.595
-                width: safe.width * 0.81
+                width: safe.width * 0.73
                 height: safe.height * 0.205
                 color: "transparent"
                 border.width: Math.max(1, safe.width * 0.004)
@@ -163,17 +163,17 @@ Item {
 
             Rectangle {
                 x: lowerPanel.x + lowerPanel.width / 3
-                y: lowerPanel.y
-                width: Math.max(1, safe.width * 0.004)
-                height: lowerPanel.height
+                y: lowerPanel.y + lowerPanel.border.width
+                width: 1
+                height: lowerPanel.height - lowerPanel.border.width * 2
                 color: app.phosphor
             }
 
             Rectangle {
                 x: lowerPanel.x + lowerPanel.width * 2 / 3
-                y: lowerPanel.y
-                width: Math.max(1, safe.width * 0.004)
-                height: lowerPanel.height
+                y: lowerPanel.y + lowerPanel.border.width
+                width: 1
+                height: lowerPanel.height - lowerPanel.border.width * 2
                 color: app.phosphor
             }
 
