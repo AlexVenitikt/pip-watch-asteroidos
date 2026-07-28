@@ -80,7 +80,7 @@ Item {
             id: safe
 
             anchors.centerIn: parent
-            width: parent.width * 0.88
+            width: parent.width * 0.90
             height: width
 
             Rectangle {
