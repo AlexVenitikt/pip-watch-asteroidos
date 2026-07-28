@@ -11,9 +11,9 @@ Item {
     property int safeSize: Math.min(width, height)
     property bool ambientMode: false
     property date now: new Date()
-    property int batteryPercentStub: 87
-    property int heartRateStub: 72
-    property int stepsStub: 8420
+    property int batteryPercentStub: 100
+    property int heartRateStub: 333
+    property int stepsStub: 99999
 
     readonly property color phosphor: ambientMode ? "#80ff77" : "#7aff6a"
     readonly property color phosphorDim: ambientMode ? "#245f2c" : "#1b6b28"
@@ -125,7 +125,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 font {
                     family: "monospace"
-                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.145
+                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.15225
                     bold: true
                     letterSpacing: 0
                 }
@@ -239,7 +239,7 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.31
+                    pixelSize: lowerPanel.height * 0.285
                     bold: true
                     letterSpacing: 0
                 }
@@ -254,7 +254,7 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.31
+                    pixelSize: lowerPanel.height * 0.285
                     bold: true
                     letterSpacing: 0
                 }
@@ -269,7 +269,7 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.31
+                    pixelSize: lowerPanel.height * 0.285
                     bold: true
                     letterSpacing: 0
                 }
