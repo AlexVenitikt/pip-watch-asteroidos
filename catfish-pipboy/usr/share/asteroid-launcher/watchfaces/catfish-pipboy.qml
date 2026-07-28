@@ -113,7 +113,7 @@ Item {
                 height: safe.height * 0.23
                 color: app.phosphor
                 text: Fmt.time24(app.now, !app.ambientMode)
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font {
                     family: "monospace"
@@ -153,9 +153,9 @@ Item {
             Rectangle {
                 id: lowerPanel
                 x: safe.width * 0.095
-                y: safe.height * 0.645
+                y: safe.height * 0.60
                 width: safe.width * 0.81
-                height: safe.height * 0.17
+                height: safe.height * 0.155
                 color: "transparent"
                 border.width: Math.max(1, safe.width * 0.004)
                 border.color: app.phosphor
