@@ -153,24 +153,40 @@ Item {
             Rectangle {
                 id: lowerPanel
                 x: safe.width * 0.095
-                y: safe.height * 0.555
+                y: safe.height * 0.595
                 width: safe.width * 0.81
-                height: safe.height * 0.155
+                height: safe.height * 0.205
                 color: "transparent"
                 border.width: Math.max(1, safe.width * 0.004)
                 border.color: app.phosphor
             }
 
+            Rectangle {
+                x: lowerPanel.x + lowerPanel.width / 3
+                y: lowerPanel.y
+                width: Math.max(1, safe.width * 0.004)
+                height: lowerPanel.height
+                color: app.phosphor
+            }
+
+            Rectangle {
+                x: lowerPanel.x + lowerPanel.width * 2 / 3
+                y: lowerPanel.y
+                width: Math.max(1, safe.width * 0.004)
+                height: lowerPanel.height
+                color: app.phosphor
+            }
+
             Text {
                 x: lowerPanel.x
-                y: lowerPanel.y + lowerPanel.height * 0.18
+                y: lowerPanel.y + lowerPanel.height * 0.12
                 width: lowerPanel.width / 3
                 color: app.phosphor
-                text: "PWR " + app.batteryPercentStub + "%"
+                text: "PWR"
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.29
+                    pixelSize: lowerPanel.height * 0.24
                     bold: true
                     letterSpacing: 0
                 }
@@ -178,14 +194,14 @@ Item {
 
             Text {
                 x: lowerPanel.x + lowerPanel.width / 3
-                y: lowerPanel.y + lowerPanel.height * 0.18
+                y: lowerPanel.y + lowerPanel.height * 0.12
                 width: lowerPanel.width / 3
                 color: app.phosphor
-                text: "STAT " + app.stepsStub
+                text: "STAT"
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.29
+                    pixelSize: lowerPanel.height * 0.24
                     bold: true
                     letterSpacing: 0
                 }
@@ -193,14 +209,59 @@ Item {
 
             Text {
                 x: lowerPanel.x + lowerPanel.width * 2 / 3
-                y: lowerPanel.y + lowerPanel.height * 0.18
+                y: lowerPanel.y + lowerPanel.height * 0.12
                 width: lowerPanel.width / 3
                 color: app.phosphor
-                text: "HP " + app.heartRateStub
+                text: "HP"
                 horizontalAlignment: Text.AlignHCenter
                 font {
                     family: "monospace"
-                    pixelSize: lowerPanel.height * 0.29
+                    pixelSize: lowerPanel.height * 0.24
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                x: lowerPanel.x
+                y: lowerPanel.y + lowerPanel.height * 0.48
+                width: lowerPanel.width / 3
+                color: app.phosphor
+                text: app.batteryPercentStub + "%"
+                horizontalAlignment: Text.AlignHCenter
+                font {
+                    family: "monospace"
+                    pixelSize: lowerPanel.height * 0.31
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                x: lowerPanel.x + lowerPanel.width / 3
+                y: lowerPanel.y + lowerPanel.height * 0.48
+                width: lowerPanel.width / 3
+                color: app.phosphor
+                text: app.stepsStub
+                horizontalAlignment: Text.AlignHCenter
+                font {
+                    family: "monospace"
+                    pixelSize: lowerPanel.height * 0.31
+                    bold: true
+                    letterSpacing: 0
+                }
+            }
+
+            Text {
+                x: lowerPanel.x + lowerPanel.width * 2 / 3
+                y: lowerPanel.y + lowerPanel.height * 0.48
+                width: lowerPanel.width / 3
+                color: app.phosphor
+                text: app.heartRateStub
+                horizontalAlignment: Text.AlignHCenter
+                font {
+                    family: "monospace"
+                    pixelSize: lowerPanel.height * 0.31
                     bold: true
                     letterSpacing: 0
                 }
