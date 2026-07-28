@@ -20,8 +20,8 @@
 - Header: `VAULT-TEC`.
 - Status strip: `PWR` battery percent, `STAT` daily steps, `HP` heart rate.
 - `PWR` uses the confirmed AsteroidOS `Nemo.Mce` battery module on the watch.
-- `HP` is wired through an optional `QtSensors` `HrmSensor` loader so missing
-  sensor support does not break the watchface.
+- `STAT` and `HP` are wired through optional `org.asteroid.sensorlogd` loaders
+  so missing health packages do not break the watchface.
 - Scanline overlay in active mode.
 - Ambient-safe visual mode property with seconds/animation removed.
 - QML-only layout using `safeSize = min(width, height)` to avoid drift outside
@@ -30,21 +30,19 @@
 ## Data Status
 - Battery integration is enabled through `Nemo.Mce` (`MceBatteryLevel` and
   `MceBatteryState`), confirmed on the target catfish watch image.
-- Live heart-rate integration is attempted through `QtSensors` (`HrmSensor`),
-  following the official `asteroid-hrm` app, but it falls back to `--` when the
-  target image does not expose that QML type.
-- Real steps are not faked. `STAT` displays `--` until a confirmed data source
-  such as `asteroid-sensorlogd` / `asteroid-health` is installed and mapped.
+- Real steps use `org.asteroid.sensorlogd` `StepsDataLoader.todayTotal`.
+- Heart-rate uses the latest `org.asteroid.sensorlogd` `HrDataLoader`
+  datapoint, with `QtSensors` `HrmSensor` as a fallback where available.
 - Local Qt Creator/qmlscene preview uses dev-only stubs for `Nemo.Mce` and
-  `HrmSensor`; those files are not deployed to the watch.
+  sensorlogd/HR modules; those files are not deployed to the watch.
 - Real weather integration depends on the installed AsteroidOS build and sync
   client data path.
 - Ambient mode is exposed as `ambientMode` property and not yet wired to the
   launcher/display state.
 
 ## Blockers Before Full Telemetry
-- Confirm or install `asteroid-sensorlogd` / `asteroid-health` for step and
-  heart-rate history.
 - Confirm why this catfish image logs `HrmSensor is not a type` in
   `asteroid-launcher` despite `asteroid-hrm` being installed.
+- Confirm long-term compatibility of AsteroidOS 2.0 `asteroid-sensorlogd`
+  packages on this `2.1-nightly` image.
 - Run `qmlscene` or `asteroid-qmltester` and inspect the 480x480 rendering.

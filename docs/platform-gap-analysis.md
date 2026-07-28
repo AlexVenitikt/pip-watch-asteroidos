@@ -12,8 +12,8 @@
 ## Adapted for AsteroidOS
 - Wear OS complications/actions replaced by watchface-level lightweight interaction (theme cycling on tap).
 - Data ingest is abstracted through `PipboyDataBridge.qml`; battery is wired to
-  the confirmed AsteroidOS `Nemo.Mce` QML module. Live BPM is isolated in an
-  optional `HrmSensorBridge.qml` loader.
+  the confirmed AsteroidOS `Nemo.Mce` QML module. Steps and recorded HR are
+  isolated in an optional `SensorlogdBridge.qml` loader.
 - Burn-in handling done via micro-offset in ambient updates.
 
 ## Not Fully Reproducible
@@ -28,9 +28,9 @@
   QML source uses `QtSensors` `HrmSensor { active: true }` with `reading.bpm`.
 - The current launcher log reports `HrmSensor is not a type`, so the watchface
   keeps HR optional and does not fail when that type is unavailable.
-- `asteroid-health` / `asteroid-sensorlogd` were not installed during the
-  initial device inspection, so daily steps and persisted heart-rate are not
-  treated as available watchface APIs yet.
+- `asteroid-health` / `asteroid-sensorlogd` were installed from the AsteroidOS
+  2.0 Qt5 feed because current nightly feeds expose Qt6 package upgrades while
+  the watch is running a Qt5 launcher.
 
 ## Licensing / Asset Policy
 - No direct reuse of proprietary Fallout assets.

@@ -14,10 +14,12 @@ Item {
     property real batteryTempC: -1
     property bool lowBattery: batteryAvailable && batteryPercent <= 15
 
-    property int heartRate: heartRateValid ? hrmLoader.item.heartRate : -1
-    property int steps: -1
-    property bool heartRateValid: hrmLoader.status === Loader.Ready && hrmLoader.item.valid
-    property bool stepsValid: false
+    property bool sensorlogdReady: sensorlogdLoader.status === Loader.Ready
+    property bool liveHrmReady: hrmLoader.status === Loader.Ready && hrmLoader.item.valid
+    property int heartRate: heartRateValid ? (sensorlogdLoader.item.heartRateValid ? sensorlogdLoader.item.heartRate : hrmLoader.item.heartRate) : -1
+    property int steps: stepsValid ? sensorlogdLoader.item.steps : -1
+    property bool heartRateValid: (sensorlogdReady && sensorlogdLoader.item.heartRateValid) || liveHrmReady
+    property bool stepsValid: sensorlogdReady && sensorlogdLoader.item.stepsValid
     property string heartRateText: heartRateValid ? heartRate : "--"
     property string stepsText: stepsValid ? steps : "--"
 
@@ -47,7 +49,13 @@ Item {
         source: Qt.resolvedUrl("HrmSensorBridge.qml")
     }
 
+    Loader {
+        id: sensorlogdLoader
+        active: true
+        source: Qt.resolvedUrl("SensorlogdBridge.qml")
+    }
+
     // Confirmed on catfish: Nemo.Mce provides battery level/state.
-    // HR is optional because some images install asteroid-hrm but do not expose
-    // HrmSensor to the launcher QML engine. Steps need sensorlogd/health.
+    // Sensorlogd is optional at load time so removing its package does not
+    // break the watchface. Direct HrmSensor remains a fallback for other images.
 }

@@ -1,0 +1,4 @@
+module org.asteroid.sensorlogd
+StepsDataLoader 1.0 StepsDataLoader.qml
+HrDataLoader 1.0 HrDataLoader.qml
+LoggerSettings 1.0 LoggerSettings.qml

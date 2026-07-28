@@ -12,7 +12,8 @@ confirmed on the target image.
 - Pip-Boy-like CRT HUD styling with scanlines.
 - `VAULT-TEC` header and lower `PWR` / `STAT` / `HP` status strip.
 - Real `PWR` battery percentage via AsteroidOS/Nemo MCE on the watch.
-- Real live `HP` BPM via AsteroidOS `QtSensors` / `HrmSensor` on the watch.
+- Optional live `HP` BPM via AsteroidOS `QtSensors` / `HrmSensor` when the
+  target image exposes that QML type.
 - `ambientMode` property for reduced seconds/animation/scanline behavior.
 - Qt Creator project file: `pip-boy-asteroidos.qmlproject`.
 
@@ -99,9 +100,11 @@ Ubuntu VM.
 
 - `PWR`: real battery percentage from `Nemo.Mce` (`MceBatteryLevel`) on
   AsteroidOS.
-- `STAT`: displays `--` until a confirmed daily step source is available.
-- `HP`: live heart-rate from `QtSensors` (`HrmSensor`); it remains `--` until
-  the sensor reports the first BPM value.
+- `STAT`: real daily steps from `org.asteroid.sensorlogd` (`StepsDataLoader`)
+  when `asteroid-sensorlogd` is installed and running.
+- `HP`: latest recorded heart-rate from `org.asteroid.sensorlogd`
+  (`HrDataLoader`), with optional live `QtSensors` (`HrmSensor`) fallback when
+  the target image exposes that type.
 - Development stubs under `dev/qml-stubs/` exist only for desktop preview.
 - Steps, heart-rate, weather, notifications, Bluetooth, and alarms depend on
   the installed AsteroidOS build and sync client path.
