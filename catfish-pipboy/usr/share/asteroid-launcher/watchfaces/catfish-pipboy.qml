@@ -109,29 +109,15 @@ Item {
                 id: timeText
                 x: safe.width * 0.075
                 y: safe.height * 0.215
-                width: safe.width * 0.48
+                width: safe.width * 0.84
                 height: safe.height * 0.23
                 color: app.phosphor
-                text: Fmt.time24(app.now, false)
+                text: Fmt.time24(app.now, !app.ambientMode)
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 font {
                     family: "monospace"
-                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.172
-                    bold: true
-                    letterSpacing: 0
-                }
-            }
-
-            Text {
-                x: safe.width * 0.10
-                y: safe.height * 0.425
-                width: safe.width * 0.28
-                color: app.phosphorDim
-                text: app.ambientMode ? "" : "SEC " + Fmt.two(app.now.getSeconds())
-                font {
-                    family: "monospace"
-                    pixelSize: safe.height * 0.036
+                    pixelSize: app.ambientMode ? safe.height * 0.185 : safe.height * 0.145
                     bold: true
                     letterSpacing: 0
                 }
@@ -160,33 +146,6 @@ Item {
                 font {
                     family: "monospace"
                     pixelSize: safe.height * 0.033
-                    letterSpacing: 0
-                }
-            }
-
-            PipboyCharacter {
-                x: safe.width * 0.64
-                y: safe.height * 0.205
-                width: safe.width * 0.24
-                height: safe.height * 0.31
-                fg: app.phosphor
-                dim: app.phosphorDim
-                ambientMode: app.ambientMode
-                state: "walking"
-                opacity: app.ambientMode ? 0.0 : 1.0
-            }
-
-            Text {
-                x: safe.width * 0.65
-                y: safe.height * 0.525
-                width: safe.width * 0.22
-                color: app.phosphorDim
-                text: app.ambientMode ? "" : "STATUS OK"
-                horizontalAlignment: Text.AlignHCenter
-                font {
-                    family: "monospace"
-                    pixelSize: safe.height * 0.034
-                    bold: true
                     letterSpacing: 0
                 }
             }

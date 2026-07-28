@@ -22,10 +22,7 @@ animation.
 
 User-requested A Classic adjustments:
 - Replace the repeated top `PWR STAT RAD` labels with `VAULT-TEC`.
-- Keep seconds away from the character by rendering seconds as a small separate
-  `SEC NN` readout.
-- Use a more character-like original QML mascot silhouette, inspired by the
-  walking cartoon reference but not copied from it.
+- Remove the character entirely and return seconds to the main clock line.
 - Lower status strip: `PWR` battery percent, `STAT` steps, `HP` heart rate.
 
 ## Rendered MVP Preview

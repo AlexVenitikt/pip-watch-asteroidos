@@ -19,7 +19,6 @@
 - Date, day-of-year, week-of-year.
 - Header: `VAULT-TEC`.
 - Status strip: `PWR` battery percent, `STAT` daily steps, `HP` heart rate.
-- Lightweight geometric character in active mode.
 - Scanline overlay in active mode.
 - Ambient-safe visual mode property with seconds/animation removed.
 - QML-only layout using `safeSize = min(width, height)` to avoid drift outside

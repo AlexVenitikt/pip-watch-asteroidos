@@ -9,7 +9,7 @@ on the target image.
 
 - Round 480x480-first layout using `safeSize = min(width, height)`.
 - Large 24h time, date, day-of-year, and week-of-year.
-- Pip-Boy-like CRT HUD styling with scanlines and simple geometric character.
+- Pip-Boy-like CRT HUD styling with scanlines.
 - `VAULT-TEC` header and lower `PWR` / `STAT` / `HP` status strip.
 - `ambientMode` property for reduced seconds/animation/scanline behavior.
 - Qt Creator project file: `pip-boy-asteroidos.qmlproject`.
