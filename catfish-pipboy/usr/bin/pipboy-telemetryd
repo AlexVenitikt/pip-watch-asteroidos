@@ -5,43 +5,134 @@ OUT="/tmp/pipboy-telemetry.json"
 TMP="${OUT}.tmp"
 QML_OUT="/tmp/pipboy-telemetry.qml"
 QML_TMP="${QML_OUT}.tmp"
-SESSION_ID=424242
+STATE_DIR="/var/lib/pipboy-telemetry"
+BASELINE_FILE="${STATE_DIR}/steps-baseline"
+HR_SESSION_ID=424242
+STEP_SESSION_ID=424243
 HR_SERVICE="com.nokia.SensorService"
 HR_PATH="/SensorManager/hrmsensor"
 HR_IFACE="local.HrmSensor"
+STEP_PATH="/SensorManager/stepcountersensor"
+STEP_IFACE="local.StepCounterSensor"
+POLL_INTERVAL="${PIPBOY_TELEMETRY_INTERVAL:-180}"
+HR_SAMPLE_DELAY="${PIPBOY_HR_SAMPLE_DELAY:-15}"
+LAST_HEART_RATE=-1
 
 cleanup() {
-    busctl --system call "$HR_SERVICE" "$HR_PATH" "$HR_IFACE" stop i "$SESSION_ID" >/dev/null 2>&1 || true
+    busctl --system call "$HR_SERVICE" "$HR_PATH" "$HR_IFACE" stop i "$HR_SESSION_ID" >/dev/null 2>&1 || true
+    busctl --system call "$HR_SERVICE" "$STEP_PATH" "$STEP_IFACE" stop i "$STEP_SESSION_ID" >/dev/null 2>&1 || true
 }
 
 trap cleanup EXIT INT TERM
 
-busctl --system call "$HR_SERVICE" "$HR_PATH" "$HR_IFACE" start i "$SESSION_ID" >/dev/null 2>&1 || true
+mkdir -p "$STATE_DIR"
+if [ -f "$OUT" ]; then
+    PREVIOUS_HEART_RATE="$(sed -n 's/.*"heartRate":\([0-9][0-9]*\).*/\1/p' "$OUT" | head -n 1)"
+    case "$PREVIOUS_HEART_RATE" in
+        ''|*[!0123456789]*)
+            ;;
+        *)
+            if [ "$PREVIOUS_HEART_RATE" -gt 0 ] && [ "$PREVIOUS_HEART_RATE" -lt 260 ]; then
+                LAST_HEART_RATE="$PREVIOUS_HEART_RATE"
+            fi
+            ;;
+    esac
+fi
 
-while true; do
-    HEART_RATE="$(busctl --system get-property "$HR_SERVICE" "$HR_PATH" "$HR_IFACE" heartRate 2>/dev/null | awk '{print $NF}')"
+sanitize_number() {
+    case "$1" in
+        ''|*[!0123456789]*)
+            printf '%s\n' "-1"
+            ;;
+        *)
+            printf '%s\n' "$1"
+            ;;
+    esac
+}
 
-    case "$HEART_RATE" in
+read_step_baseline() {
+    TODAY="$1"
+    RAW_STEPS="$2"
+
+    if [ -f "$BASELINE_FILE" ]; then
+        read -r BASELINE_DATE BASELINE_STEPS < "$BASELINE_FILE" || true
+    else
+        BASELINE_DATE=""
+        BASELINE_STEPS=""
+    fi
+
+    case "$BASELINE_STEPS" in
         ''|*[!0-9]*)
-            HEART_RATE=-1
+            BASELINE_STEPS="$RAW_STEPS"
             ;;
     esac
 
+    if [ "$BASELINE_DATE" != "$TODAY" ] || [ "$RAW_STEPS" -lt "$BASELINE_STEPS" ]; then
+        BASELINE_DATE="$TODAY"
+        BASELINE_STEPS="$RAW_STEPS"
+        printf '%s %s\n' "$BASELINE_DATE" "$BASELINE_STEPS" > "$BASELINE_FILE"
+    fi
+
+    printf '%s\n' "$BASELINE_STEPS"
+}
+
+busctl --system call "$HR_SERVICE" /SensorManager local.SensorManager loadPlugin s hybrisstepcounteradaptor >/dev/null 2>&1 || true
+busctl --system call "$HR_SERVICE" /SensorManager local.SensorManager loadPlugin s stepcountersensor >/dev/null 2>&1 || true
+busctl --system call "$HR_SERVICE" /SensorManager local.SensorManager requestSensor sx stepcountersensor "$STEP_SESSION_ID" >/dev/null 2>&1 || true
+busctl --system call "$HR_SERVICE" "$STEP_PATH" "$STEP_IFACE" start i "$STEP_SESSION_ID" >/dev/null 2>&1 || true
+sleep 1
+
+while true; do
+    busctl --system call "$HR_SERVICE" "$HR_PATH" "$HR_IFACE" start i "$HR_SESSION_ID" >/dev/null 2>&1 || true
+    sleep "$HR_SAMPLE_DELAY"
+    HEART_RATE_RAW="$(busctl --system get-property "$HR_SERVICE" "$HR_PATH" "$HR_IFACE" heartRate 2>/dev/null | awk '{print $NF}')"
+    HEART_RATE="$(sanitize_number "$HEART_RATE_RAW")"
+    busctl --system call "$HR_SERVICE" "$HR_PATH" "$HR_IFACE" stop i "$HR_SESSION_ID" >/dev/null 2>&1 || true
+
+    RAW_STEPS_RAW="$(busctl --system get-property "$HR_SERVICE" "$STEP_PATH" "$STEP_IFACE" steps 2>/dev/null | awk '{print $NF}')"
+    RAW_STEPS="$(sanitize_number "$RAW_STEPS_RAW")"
+    if [ "$RAW_STEPS" -lt 0 ]; then
+        busctl --system call "$HR_SERVICE" /SensorManager local.SensorManager loadPlugin s hybrisstepcounteradaptor >/dev/null 2>&1 || true
+        busctl --system call "$HR_SERVICE" /SensorManager local.SensorManager loadPlugin s stepcountersensor >/dev/null 2>&1 || true
+        busctl --system call "$HR_SERVICE" /SensorManager local.SensorManager requestSensor sx stepcountersensor "$STEP_SESSION_ID" >/dev/null 2>&1 || true
+        busctl --system call "$HR_SERVICE" "$STEP_PATH" "$STEP_IFACE" start i "$STEP_SESSION_ID" >/dev/null 2>&1 || true
+        sleep 1
+        RAW_STEPS_RAW="$(busctl --system get-property "$HR_SERVICE" "$STEP_PATH" "$STEP_IFACE" steps 2>/dev/null | awk '{print $NF}')"
+        RAW_STEPS="$(sanitize_number "$RAW_STEPS_RAW")"
+    fi
+
     if [ "$HEART_RATE" -le 0 ] || [ "$HEART_RATE" -ge 260 ]; then
-        HEART_RATE=-1
+        HEART_RATE="$LAST_HEART_RATE"
+    else
+        LAST_HEART_RATE="$HEART_RATE"
+    fi
+    if [ "$RAW_STEPS" -lt 0 ]; then
+        STEPS=-1
+    else
+        TODAY="$(date +%Y-%m-%d)"
+        BASELINE_STEPS="$(read_step_baseline "$TODAY" "$RAW_STEPS")"
+        if [ "$RAW_STEPS" -eq "$BASELINE_STEPS" ]; then
+            STEPS=0
+        else
+            STEPS="$(expr "$RAW_STEPS" - "$BASELINE_STEPS")"
+        fi
     fi
 
     UPDATED_AT="$(date +%s)"
-    printf '{"heartRate":%s,"steps":-1,"updatedAt":%s}\n' "$HEART_RATE" "$UPDATED_AT" > "$TMP"
+    printf '{"heartRate":%s,"steps":%s,"updatedAt":%s}\n' "$HEART_RATE" "$STEPS" "$UPDATED_AT" > "$TMP"
     mv "$TMP" "$OUT"
     {
         printf 'import QtQml 2.0\n'
         printf 'QtObject {\n'
         printf '    property int heartRate: %s\n' "$HEART_RATE"
-        printf '    property int steps: -1\n'
+        printf '    property int steps: %s\n' "$STEPS"
         printf '    property int updatedAt: %s\n' "$UPDATED_AT"
         printf '}\n'
     } > "$QML_TMP"
     mv "$QML_TMP" "$QML_OUT"
-    sleep 5
+    REMAINING_SLEEP="$(expr "$POLL_INTERVAL" - "$HR_SAMPLE_DELAY")"
+    if [ "$REMAINING_SLEEP" -lt 1 ]; then
+        REMAINING_SLEEP=1
+    fi
+    sleep "$REMAINING_SLEEP"
 done

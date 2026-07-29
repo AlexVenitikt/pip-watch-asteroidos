@@ -103,16 +103,20 @@ Ubuntu VM.
 
 - `PWR`: real battery percentage from `Nemo.Mce` (`MceBatteryLevel`) on
   AsteroidOS.
-- `STAT`: `--` on current catfish Qt6 images because no step counter or
-  `asteroid-sensorlogd` package is exposed.
+- `STAT`: daily steps from the catfish `stepcountersensor` DBus path. The
+  telemetry service loads `hybrisstepcounteradaptor` / `stepcountersensor`,
+  reads `local.StepCounterSensor.steps`, and stores a per-day baseline under
+  `/var/lib/pipboy-telemetry/`. The raw sensor value is "steps since boot", so
+  today's count starts from the first telemetry sample of the day.
 - `HP`: live heart-rate from `pipboy-telemetry.service`. The service polls the
   confirmed `com.nokia.SensorService` DBus endpoint
-  (`/SensorManager/hrmsensor`) with `busctl`, writes
-  `/tmp/pipboy-telemetry.qml`, and the watchface reads that simple QML snapshot.
+  (`/SensorManager/hrmsensor`) with `busctl` for a short sample window every
+  180 seconds, writes `/tmp/pipboy-telemetry.qml`, and the watchface reads that
+  simple QML snapshot.
   This avoids the current Qt6/Nemo.DBus custom-struct unmarshalling issue for
   `heartRate` type `((x)i)`.
 - Development stubs under `dev/qml-stubs/` exist only for desktop preview.
-- Steps, weather, notifications, Bluetooth, and alarms depend on the installed
+- Weather, notifications, Bluetooth, and alarms depend on the installed
   AsteroidOS build and sync client path.
 - Ambient mode is exposed as a property and still needs launcher/display-state
   wiring after module availability is verified.

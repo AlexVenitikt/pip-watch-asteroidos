@@ -6,6 +6,7 @@ import "ui"
 Item {
     id: app
 
+    anchors.fill: parent
     width: parent ? parent.width : 480
     height: parent ? parent.height : 480
 
