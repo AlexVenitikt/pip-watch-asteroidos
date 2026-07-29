@@ -1,5 +1,5 @@
 import QtQuick 2.6
-import QtSensors 5.0
+import QtSensors
 
 Item {
     id: root

@@ -1,0 +1,12 @@
+[Unit]
+Description=Pip-Boy watchface telemetry bridge
+After=dbus.service sensorfwd.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/pipboy-telemetryd
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

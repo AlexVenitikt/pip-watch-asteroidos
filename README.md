@@ -12,15 +12,17 @@ confirmed on the target image.
 - Pip-Boy-like CRT HUD styling with scanlines.
 - `VAULT-TEC` header and lower `PWR` / `STAT` / `HP` status strip.
 - Real `PWR` battery percentage via AsteroidOS/Nemo MCE on the watch.
-- Optional live `HP` BPM via AsteroidOS `QtSensors` / `HrmSensor` when the
-  target image exposes that QML type.
+- Live `HP` BPM through the installed `pipboy-telemetry` service, which reads
+  the confirmed AsteroidOS `com.nokia.SensorService` HR DBus endpoint.
 - `ambientMode` property for reduced seconds/animation/scanline behavior.
 - Qt Creator project file: `pip-boy-asteroidos.qmlproject`.
 
 ## Project Layout
 
 - `qml/` - source QML and shared components.
-- `catfish-pipboy/usr/share/asteroid-launcher/` - installable AsteroidOS layout.
+- `catfish-pipboy/usr/share/asteroid-launcher/` - installable AsteroidOS watchface layout.
+- `catfish-pipboy/usr/bin/` and `catfish-pipboy/etc/systemd/` - telemetry
+  helper service installed by the SSH deploy script.
 - `src/` - MVP source notes; no native C++ is needed yet.
 - `tests/` - QML/JS formatter tests.
 - `docs/` - MVP scope, design brief, architecture, platform notes.
@@ -85,7 +87,8 @@ After approval and with the watch reachable over SSH:
 ```
 
 The script installs the QML watchface files under
-`/usr/share/asteroid-launcher/` and restarts the launcher session.
+`/usr/share/asteroid-launcher/`, installs/enables `pipboy-telemetry.service`,
+and restarts the launcher session.
 
 ## Tests
 
@@ -100,14 +103,17 @@ Ubuntu VM.
 
 - `PWR`: real battery percentage from `Nemo.Mce` (`MceBatteryLevel`) on
   AsteroidOS.
-- `STAT`: real daily steps from `org.asteroid.sensorlogd` (`StepsDataLoader`)
-  when `asteroid-sensorlogd` is installed and running.
-- `HP`: latest recorded heart-rate from `org.asteroid.sensorlogd`
-  (`HrDataLoader`), with optional live `QtSensors` (`HrmSensor`) fallback when
-  the target image exposes that type.
+- `STAT`: `--` on current catfish Qt6 images because no step counter or
+  `asteroid-sensorlogd` package is exposed.
+- `HP`: live heart-rate from `pipboy-telemetry.service`. The service polls the
+  confirmed `com.nokia.SensorService` DBus endpoint
+  (`/SensorManager/hrmsensor`) with `busctl`, writes
+  `/tmp/pipboy-telemetry.qml`, and the watchface reads that simple QML snapshot.
+  This avoids the current Qt6/Nemo.DBus custom-struct unmarshalling issue for
+  `heartRate` type `((x)i)`.
 - Development stubs under `dev/qml-stubs/` exist only for desktop preview.
-- Steps, heart-rate, weather, notifications, Bluetooth, and alarms depend on
-  the installed AsteroidOS build and sync client path.
+- Steps, weather, notifications, Bluetooth, and alarms depend on the installed
+  AsteroidOS build and sync client path.
 - Ambient mode is exposed as a property and still needs launcher/display-state
   wiring after module availability is verified.
 

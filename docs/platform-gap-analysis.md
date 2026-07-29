@@ -28,9 +28,11 @@
   QML source uses `QtSensors` `HrmSensor { active: true }` with `reading.bpm`.
 - The current launcher log reports `HrmSensor is not a type`, so the watchface
   keeps HR optional and does not fail when that type is unavailable.
-- `asteroid-health` / `asteroid-sensorlogd` were installed from the AsteroidOS
-  2.0 Qt5 feed because current nightly feeds expose Qt6 package upgrades while
-  the watch is running a Qt5 launcher.
+- Fresh AsteroidOS 2.2-nightly on catfish is Qt6-based and does not currently
+  expose `asteroid-health` / `asteroid-sensorlogd` packages in the active
+  feeds. The watchface keeps that bridge disabled by default.
+- `com.nokia.SensorService` exposes `/SensorManager/hrmsensor`; no
+  `/SensorManager/stepcountersensor` was present during inspection.
 
 ## Licensing / Asset Policy
 - No direct reuse of proprietary Fallout assets.

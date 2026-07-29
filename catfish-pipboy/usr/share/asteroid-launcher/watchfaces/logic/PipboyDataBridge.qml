@@ -14,12 +14,30 @@ Item {
     property real batteryTempC: -1
     property bool lowBattery: batteryAvailable && batteryPercent <= 15
 
+    property bool enableSensorlogd: false
+    property bool enableQtSensorsHrm: false
+    property bool enableNemoDbusHrm: false
+    property bool telemetryReady: telemetryLoader.status === Loader.Ready
     property bool sensorlogdReady: sensorlogdLoader.status === Loader.Ready
+    property bool hrmDbusReady: hrmDbusLoader.status === Loader.Ready && hrmDbusLoader.item.valid
     property bool liveHrmReady: hrmLoader.status === Loader.Ready && hrmLoader.item.valid
-    property int heartRate: heartRateValid ? (sensorlogdLoader.item.heartRateValid ? sensorlogdLoader.item.heartRate : hrmLoader.item.heartRate) : -1
-    property int steps: stepsValid ? sensorlogdLoader.item.steps : -1
-    property bool heartRateValid: (sensorlogdReady && sensorlogdLoader.item.heartRateValid) || liveHrmReady
-    property bool stepsValid: sensorlogdReady && sensorlogdLoader.item.stepsValid
+    property int heartRate: telemetryReady && telemetryLoader.item.heartRateValid
+                            ? telemetryLoader.item.heartRate
+                            : sensorlogdReady && sensorlogdLoader.item.heartRateValid
+                            ? sensorlogdLoader.item.heartRate
+                            : hrmDbusReady
+                              ? hrmDbusLoader.item.heartRate
+                              : liveHrmReady
+                                ? hrmLoader.item.heartRate
+                                : -1
+    property int steps: stepsValid
+                        ? telemetryReady && telemetryLoader.item.stepsValid
+                          ? telemetryLoader.item.steps
+                          : sensorlogdLoader.item.steps
+                        : -1
+    property bool heartRateValid: heartRate > 0
+    property bool stepsValid: telemetryReady && telemetryLoader.item.stepsValid
+                              || sensorlogdReady && sensorlogdLoader.item.stepsValid
     property string heartRateText: heartRateValid ? heartRate : "--"
     property string stepsText: stepsValid ? steps : "--"
 
@@ -44,18 +62,32 @@ Item {
     }
 
     Loader {
+        id: telemetryLoader
+        active: true
+        source: Qt.resolvedUrl("TelemetryFileBridge.qml")
+    }
+
+    Loader {
         id: hrmLoader
-        active: !root.ambientMode
+        active: root.enableQtSensorsHrm && !root.ambientMode
         source: Qt.resolvedUrl("HrmSensorBridge.qml")
     }
 
     Loader {
+        id: hrmDbusLoader
+        active: root.enableNemoDbusHrm && !root.ambientMode
+        source: Qt.resolvedUrl("HrmDbusBridge.qml")
+    }
+
+    Loader {
         id: sensorlogdLoader
-        active: true
+        active: root.enableSensorlogd
         source: Qt.resolvedUrl("SensorlogdBridge.qml")
     }
 
     // Confirmed on catfish: Nemo.Mce provides battery level/state.
-    // Sensorlogd is optional at load time so removing its package does not
-    // break the watchface. Direct HrmSensor remains a fallback for other images.
+    // Sensorlogd is disabled by default because current Qt6 catfish images do
+    // not ship it. QtSensors HrmSensor is disabled by default because sensorfw
+    // logs DBus marshalling warnings on catfish; direct SensorService DBus is
+    // the primary HR path.
 }
