@@ -1,7 +1,8 @@
 # Changelog
 
-## [0.1.0] - 2026-05-17
-- Initial AsteroidOS watchface implementation for `catfish_ext`.
-- Added Pip-Boy style UI, themes, ambient mode, and fallback data bridge.
-- Added deploy scripts (SSH/ADB), layout sync, and IPK build script.
-- Added architecture docs, gap analysis, and manual QA checklists.
+## [0.1.0] - 2026-07-30
+- First release for TicWatch Pro 2020 / `catfish_ext`.
+- Added centered Pip-Boy style QML watchface with real battery display.
+- Added `pipboy-telemetry.service` for heart-rate and step telemetry.
+- Added IPK packaging, package maintainer scripts, quick installer, and release artifact script.
+- Verified on a real catfish watch running AsteroidOS Qt 6.11.2 nightly.

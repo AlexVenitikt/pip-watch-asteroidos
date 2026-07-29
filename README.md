@@ -1,11 +1,14 @@
 # Catfish Pip-Boy Watchface for AsteroidOS
 
-QML-only Pip-Boy-inspired watchface MVP for AsteroidOS on TicWatch Pro 2020
-(`catfish-ext`). The first goal is a stable, centered, readable round
-watchface; device-specific data providers are wired only after they are
-confirmed on the target image.
+QML-only Pip-Boy-inspired watchface for AsteroidOS on TicWatch Pro 2020
+(`catfish-ext`). The release target is a stable, centered, readable round
+watchface with real battery, step, and heart-rate telemetry on the tested
+catfish Qt 6 AsteroidOS image.
 
-## Current MVP
+This project was developed with help from AI-assisted tooling; release code,
+packaging, and device behavior are verified on real hardware.
+
+## Features
 
 - Round 480x480-first layout using `safeSize = min(width, height)`.
 - Large 24h time, date, day-of-year, and week-of-year.
@@ -17,12 +20,48 @@ confirmed on the target image.
 - `ambientMode` property for reduced seconds/animation/scanline behavior.
 - Qt Creator project file: `pip-boy-asteroidos.qmlproject`.
 
+## Quick Install
+
+Prerequisites:
+
+- AsteroidOS watch with SSH enabled.
+- Host machine with `ssh`, `scp`, `tar`, and `ar`.
+- Watch IP address, for example USB networking `192.168.2.15` or Wi-Fi.
+
+Build and install directly from the repository:
+
+```bash
+git clone https://github.com/AlexVenitikt/pip-watch-asteroidos.git
+cd pip-watch-asteroidos
+./scripts/install-watchface.sh <watch-ip>
+```
+
+The installer builds the `.ipk`, copies it to the watch, installs it with
+`opkg`, starts `pipboy-telemetry.service`, and tries to select the watchface for
+the `ceres` user.
+
+Manual package install:
+
+```bash
+./scripts/build-ipk.sh
+scp dist/asteroid-watchface-catfish-pipboy_*.ipk root@<watch-ip>:/tmp/
+ssh root@<watch-ip> 'opkg install --force-reinstall /tmp/asteroid-watchface-catfish-pipboy_*.ipk'
+```
+
+Useful upstream references:
+
+- [AsteroidOS watchface and package installation](https://wiki.asteroidos.org/index.php/Watchface_and_Package_Installation)
+- [AsteroidOS creating a watchface](https://wiki.asteroidos.org/index.php/Creating_a_Watchface)
+- [AsteroidOS SSH](https://wiki.asteroidos.org/index.php/SSH)
+- [AsteroidOS SDK installation](https://wiki.asteroidos.org/index.php/Installing_the_SDK)
+
 ## Project Layout
 
 - `qml/` - source QML and shared components.
 - `catfish-pipboy/usr/share/asteroid-launcher/` - installable AsteroidOS watchface layout.
 - `catfish-pipboy/usr/bin/` and `catfish-pipboy/etc/systemd/` - telemetry
-  helper service installed by the SSH deploy script.
+  helper service installed by the package or SSH deploy script.
+- `packaging/` - IPK control metadata and package maintainer scripts.
 - `src/` - MVP source notes; no native C++ is needed yet.
 - `tests/` - QML/JS formatter tests.
 - `docs/` - MVP scope, design brief, architecture, platform notes.
@@ -30,11 +69,9 @@ confirmed on the target image.
 
 ## Design
 
-The concept sheet is in `docs/pipboy-design-concepts.png`.
-
-MVP direction: hybrid of `A CLASSIC` and `C AMBIENT`: large readable time,
-compact status panels, no proprietary Fallout assets, and geometry that stays
-inside the round display.
+The release layout uses a compact Pip-Boy-inspired CRT HUD: large readable time,
+compact status panels, repository-authored SVG preview art, and no redistributed
+proprietary Fallout assets.
 
 ## Preview in Qt Creator
 
@@ -76,7 +113,23 @@ This copies `qml/Main.qml` and support files into:
 catfish-pipboy/usr/share/asteroid-launcher/watchfaces/
 ```
 
-## Deploy
+## Build Release Artifacts
+
+```bash
+./scripts/release.sh
+```
+
+Outputs are written under `dist/release-v<version>/`:
+
+- `asteroid-watchface-catfish-pipboy_<version>_all.ipk`
+- source archive
+- `SHA256SUMS`
+
+The build script does not require the full AsteroidOS SDK because this package
+contains QML, shell, SVG, and systemd files only. The SDK is still useful for
+emulator testing and broader AsteroidOS development.
+
+## Developer Deploy
 
 Do not deploy before visual approval.
 
@@ -123,6 +176,6 @@ Ubuntu VM.
 
 See also:
 
-- `docs/mvp.md`
+- `docs/architecture.md`
 - `docs/platform-gap-analysis.md`
 - `docs/asset-license-notes.md`

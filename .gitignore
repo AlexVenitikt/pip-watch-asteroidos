@@ -17,3 +17,9 @@ __pycache__/
 *.bak
 .thumbnails/*.png
 screenshots/*.png
+device-backups/
+Logos/
+Map Icons/
+Other Icons/
+catfish-pipboy/usr/share/asteroid-launcher/watchfaces/assets/
+docs/*.png

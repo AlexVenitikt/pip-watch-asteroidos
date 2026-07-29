@@ -17,10 +17,6 @@ Remove-Item -LiteralPath (Join-Path $watchfaceDir "assets") -Recurse -Force -Err
 Copy-Item -LiteralPath (Join-Path $Root "qml\logic") -Destination $watchfaceDir -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $Root "qml\ui") -Destination $watchfaceDir -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $Root "qml\settings") -Destination $watchfaceDir -Recurse -Force
-New-Item -ItemType Directory -Force -Path (Join-Path $watchfaceDir "assets\logos"), (Join-Path $watchfaceDir "assets\map-icons"), (Join-Path $watchfaceDir "assets\other-icons") | Out-Null
-Copy-Item -Path (Join-Path $Root "Logos\*.png") -Destination (Join-Path $watchfaceDir "assets\logos") -Force
-Copy-Item -Path (Join-Path $Root "Map Icons\*.png") -Destination (Join-Path $watchfaceDir "assets\map-icons") -Force
-Copy-Item -Path (Join-Path $Root "Other Icons\*.png") -Destination (Join-Path $watchfaceDir "assets\other-icons") -Force
 Copy-Item -LiteralPath (Join-Path $Root "assets\icons\catfishpipboy_preview.svg") -Destination (Join-Path $previewDir "catfish-pipboy.svg") -Force
 Copy-Item -LiteralPath (Join-Path $Root "assets\icons\catfishpipboy_preview.svg") -Destination (Join-Path $imgDir "catfish-pipboy.svg") -Force
 
